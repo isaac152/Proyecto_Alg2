@@ -1,0 +1,6 @@
+Usuario;
+12345;
+Doctor dotorin doctorino doctorico;
+Pediatra;
+1,3,5;
+8,9,10,11,12,15,16,17;
