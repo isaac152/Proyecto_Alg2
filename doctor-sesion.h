@@ -1,5 +1,6 @@
 #include <iostream>
 #include <fstream>
+#include "contrasena.h"
 using namespace std;
 
 struct doctor {
@@ -16,7 +17,7 @@ Doc registro_doctor=NULL;
 
 bool validacion(string user,string pass)
 {
-    if ((user==registro_doctor->user) && (pass==registro_doctor->pass))
+    if ((user==registro_doctor->user) && (encriptado(pass)==registro_doctor->pass))
         {
             return true;
         }
