@@ -3,6 +3,21 @@
 #include "contrasena.h"
 using namespace std;
 
+//Libreria encargada de leer el archivo doctor y asignar sus valores a su respectivo nodo
+//Encargarse del inicio de sesion del doctor
+
+/*Arbol de llamado
+    -inicioSesion
+        -crearDoctor
+        -datos sesion (recursiva)
+            -entrada
+                -validacion
+                    -Encriptado(LIBRERIA CONTRASEÑA)
+                -verificacionCaracteres
+    Main()
+*/
+
+//Estructura que guardara los datos leidos del archivo del doctor. 
 struct doctor {
     string user;
     string pass;
@@ -11,10 +26,15 @@ struct doctor {
     string dias;
     string horas;
 };
-typedef struct doctor *Doc;
 
+typedef struct doctor *Doc;
+//Inicializacion de tipo de dato- Doctor- Como null y variable global
 Doc registro_doctor=NULL;
 
+//Funcion que se encarga de verificar que el usuario y la contraseña coinciden con los datos 
+//del nodo doctor.
+
+//NOTA: Se hace un llamado a la funcion encriptado pues la contrasena esta encriptada en el archivo
 bool validacion(string user,string pass)
 {
     if ((user==registro_doctor->user) && (encriptado(pass)==registro_doctor->pass))
@@ -26,6 +46,7 @@ bool validacion(string user,string pass)
             return false;
         }
 }
+//Funcion que verifica si el user o la contrasena, tiene mas de 6 cacteres sin espacio
 bool verificacionCaracteres(string parametro){
     if (parametro.length()>=6)
     {
@@ -50,6 +71,8 @@ bool verificacionCaracteres(string parametro){
     
 }
 
+//Funcion que hace un llamado a las dos validaciones anteriores y devuelve el valor booleano 
+//de la operacion de las dos validaciones. Asi, como un mensaje de error.
 bool entrada(string user, string pass){
     bool val1,val2;
     val1=verificacionCaracteres(user);
@@ -72,6 +95,9 @@ bool entrada(string user, string pass){
     
 }
 
+//Funcion que se encarga de pedir los datos al usuario
+//Luego hace llamado a la funcion entrada para que haga las validaciones necesarias
+//Si entrada devuelve un falso, se hace un llamado recursivo a datoSesion hasta que pueda entrar.
 bool datoSesion(){
     string user,pass; 
     cout<<"Introduzca el username: ";
@@ -87,10 +113,12 @@ bool datoSesion(){
     {
         cout<<"Intente de nuevo."<<endl;
         cout<<"********************"<<endl;
-        datoSesion(); //intento recursividad,, siempre debe dar positivo
-    }}
-
-Doc crearDoctor(Doc &registro){
+        datoSesion(); // Recursividad, siempre debe dar positivo
+    }
+    }
+//Funcion que verifica la existencia del archivo doctor y llena la estructura doctor con los datos
+//dentro del archivo
+bool crearDoctor(Doc &registro){
     fstream archivo;
     string linea;
     registro=new(struct doctor);
@@ -106,18 +134,28 @@ Doc crearDoctor(Doc &registro){
                 getline(archivo,registro->dias);
                 getline(archivo,registro->horas);
             }
+        return true;
     }
     else
     {
-        cout<<"Error archivo doctor"<<endl;
+        return false;
     }
 }
+//Llamada principal de inicio de sesion.  
+//Verifica que el archivo doctor funcionara correctamente 
+//No finaliza hasta que datosSesion retorne verdadero.
 bool inicioSesion(){
     cout<<"APP MEDICA"<<endl;
     crearDoctor(registro_doctor);
-    if (datoSesion()){
+    if (datoSesion() && registro_doctor!=NULL){
         return true;
     }
+    else
+    {
+        cout<<"Error archivo doctor no disponible o corrupto"<<endl;
+        return false;
+    }
+    
 }
 
 

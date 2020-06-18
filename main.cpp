@@ -1,14 +1,15 @@
 #include <iostream>
 #include "doctor-sesion.h"
-
 using namespace std;
-string contrasena,encrip;
+
+//Archivo principal de la app
 
 int main()
 {
 
     if(inicioSesion()){
-        cout<<"LO HICIMOS, LO HICIMOS"<<endl;
+        cout<<"Lo hicimos"<<endl;
+
     }
-    
+
 }
