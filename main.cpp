@@ -2,10 +2,10 @@
 #include "doctor-sesion.h"
 using namespace std;
 
-//Archivo principal de la app
 
+//Archivo principal de la app
 int main()
-{
+{   
 
     if(inicioSesion()){
         cout<<"Lo hicimos"<<endl;

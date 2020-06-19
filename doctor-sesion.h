@@ -1,5 +1,6 @@
 #include <iostream>
 #include <fstream>
+#include "fecha.h"
 #include "contrasena.h"
 using namespace std;
 
@@ -23,13 +24,17 @@ struct doctor {
     string pass;
     string nombre;
     string especializacion;
-    string dias;
-    string horas;
+    semana dias;
+    horas horas_lab;
 };
 
 typedef struct doctor *Doc;
 //Inicializacion de tipo de dato- Doctor- Como null y variable global
 Doc registro_doctor=NULL;
+semana lista_semana=NULL;
+horas lista_horas=NULL;
+
+
 
 //Funcion que se encarga de verificar que el usuario y la contraseña coinciden con los datos 
 //del nodo doctor.
@@ -118,7 +123,7 @@ bool datoSesion(){
     }
 //Funcion que verifica la existencia del archivo doctor y llena la estructura doctor con los datos
 //dentro del archivo
-bool crearDoctor(Doc &registro){
+bool crearDoctor(Doc &registro, semana &lista_semana){
     fstream archivo;
     string linea;
     registro=new(struct doctor);
@@ -131,8 +136,12 @@ bool crearDoctor(Doc &registro){
                 getline(archivo,registro->pass);
                 getline(archivo,registro->nombre);
                 getline(archivo,registro->especializacion);
-                getline(archivo,registro->dias);
-                getline(archivo,registro->horas);
+                getline(archivo,linea);
+                asignarSemana(linea,lista_semana);
+                registro->dias=lista_semana;
+                getline(archivo,linea);
+                asingarHoras(lista_horas,linea);
+                registro->horas_lab=lista_horas;
             }
         return true;
     }
@@ -141,12 +150,13 @@ bool crearDoctor(Doc &registro){
         return false;
     }
 }
+
 //Llamada principal de inicio de sesion.  
 //Verifica que el archivo doctor funcionara correctamente 
 //No finaliza hasta que datosSesion retorne verdadero.
 bool inicioSesion(){
     cout<<"APP MEDICA"<<endl;
-    crearDoctor(registro_doctor);
+    crearDoctor(registro_doctor,lista_semana);
     if (datoSesion() && registro_doctor!=NULL){
         return true;
     }
@@ -158,4 +168,15 @@ bool inicioSesion(){
     
 }
 
+//Funcion prueba
 
+void mostrarLista(horas lista){
+    horas recorrido;
+    recorrido=lista;
+    while(recorrido != NULL){
+        cout<<recorrido->hora<<endl;
+        recorrido=recorrido->sig;
+
+    }
+
+}
