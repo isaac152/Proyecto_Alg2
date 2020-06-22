@@ -142,6 +142,7 @@ bool crearDoctor(Doc &registro, semana &lista_semana){
                 getline(archivo,linea);
                 asingarHoras(lista_horas,linea);
                 registro->horas_lab=lista_horas;
+                break;
             }
         return true;
     }
@@ -149,6 +150,7 @@ bool crearDoctor(Doc &registro, semana &lista_semana){
     {
         return false;
     }
+    archivo.close();
 }
 
 //Llamada principal de inicio de sesion.  
@@ -157,6 +159,10 @@ bool crearDoctor(Doc &registro, semana &lista_semana){
 bool inicioSesion(){
     cout<<"APP MEDICA"<<endl;
     crearDoctor(registro_doctor,lista_semana);
+    cout<<registro_doctor->user<<endl;
+    cout<<registro_doctor->pass<<endl;
+    cout<<descencriptado(registro_doctor->pass)<<endl;
+    
     if (datoSesion() && registro_doctor!=NULL){
         return true;
     }

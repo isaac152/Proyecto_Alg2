@@ -1,5 +1,6 @@
 #include <iostream>
 #include "doctor-sesion.h"
+#include "menu.h"
 using namespace std;
 
 
@@ -8,8 +9,8 @@ int main()
 {   
 
     if(inicioSesion()){
-        cout<<"Lo hicimos"<<endl;
+        interfazMenu();
 
     }
-
+    return 0;
 }
