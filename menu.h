@@ -1,4 +1,5 @@
 #include <iostream>
+#include "contrasena.h"
 using namespace std;
 
 //limpiar pantalla
@@ -11,7 +12,7 @@ void cambioContrasena(){
     if (validacion(registro_doctor->user,seguridad)){
         cout<<"Introduce la nueva contrasena"<<endl;
         cin>>nueva_contrasena;
-        nueva_contrasena=encriptado(nueva_contrasena);
+        nueva_contrasena=base64_encode(nueva_contrasena,cadena);
         registro_doctor->pass=nueva_contrasena;
         cambiarContra(nueva_contrasena);
     }

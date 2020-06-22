@@ -1,7 +1,7 @@
 #include <iostream>
 #include <fstream>
+#include "base64.cpp"
 #include "fecha.h"
-#include "contrasena.h"
 using namespace std;
 
 //Libreria encargada de leer el archivo doctor y asignar sus valores a su respectivo nodo
@@ -27,7 +27,7 @@ struct doctor {
     semana dias;
     horas horas_lab;
 };
-
+bool cadena;
 typedef struct doctor *Doc;
 //Inicializacion de tipo de dato- Doctor- Como null y variable global
 Doc registro_doctor=NULL;
@@ -42,7 +42,7 @@ horas lista_horas=NULL;
 //NOTA: Se hace un llamado a la funcion encriptado pues la contrasena esta encriptada en el archivo
 bool validacion(string user,string pass)
 {
-    if ((user==registro_doctor->user) && (encriptado(pass)==registro_doctor->pass))
+    if ((user==registro_doctor->user) && (base64_encode(pass,cadena)==registro_doctor->pass))
         {
             return true;
         }
@@ -161,8 +161,8 @@ bool inicioSesion(){
     crearDoctor(registro_doctor,lista_semana);
     cout<<registro_doctor->user<<endl;
     cout<<registro_doctor->pass<<endl;
-    cout<<descencriptado(registro_doctor->pass)<<endl;
-    
+    cout<<base64_decode(registro_doctor->pass,cadena)<<endl;;
+
     if (datoSesion() && registro_doctor!=NULL){
         return true;
     }
