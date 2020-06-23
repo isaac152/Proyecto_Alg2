@@ -1,7 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include "base64.cpp"
-#include "fecha.h"
+#include "fechadoc.h"
 using namespace std;
 
 //Libreria encargada de leer el archivo doctor y asignar sus valores a su respectivo nodo
@@ -172,17 +172,4 @@ bool inicioSesion(){
         return false;
     }
     
-}
-
-//Funcion prueba
-
-void mostrarLista(horas lista){
-    horas recorrido;
-    recorrido=lista;
-    while(recorrido != NULL){
-        cout<<recorrido->hora<<endl;
-        recorrido=recorrido->sig;
-
-    }
-
 }
