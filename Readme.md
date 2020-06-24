@@ -1,9 +1,9 @@
-Proyecto Algoritmos 2            
- 
-Requerimientos:      
-    1. Autenticación de usuario.          
-    2. Registro de paciente.       
-    3. Modificación de registro de paciente.         
+# Proyecto Algoritmos 2            
+
+### Requerimientos: ###      
+    1. ~~ Autenticación de usuario. ~~          
+    2. ~~ Registro de paciente. ~~      
+    3. ~~ Modificación de registro de paciente. ~~         
     4. Registro o actualización de historia.       
     5. Modificación de actualización de historia.           
     6. Mostrar historial de un paciente.                     
@@ -13,3 +13,5 @@ Requerimientos:
     10. Mostrar citas para una fecha.               
     11. Mostrar citas para un rango de fechas.           
 
+### Progreso: ###
+**3/11**

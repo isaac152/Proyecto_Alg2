@@ -7,6 +7,7 @@ using namespace std;
 
 //Archivo principal de la app
 int main(){
+    int cedula;
     /*
     int b;
     int a=1;
@@ -28,6 +29,11 @@ int main(){
         }
         */
     leeArchivoPaciente(lista_pacientes);
+    mostrarLista(lista_pacientes);
+    cout<<endl;
+    cout<<"*******************"<<endl;
+    modificarPaciente(lista_pacientes);
+    cout<<"*******************"<<endl;
     mostrarLista(lista_pacientes);
 
 /*

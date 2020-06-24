@@ -64,7 +64,6 @@ char sexoPaciente(){
     }
 }
 
-
 string lineasTexto(){
     char linea[500];
     linea[0]=' ';
@@ -143,6 +142,16 @@ void mostrarLista(apun_pacientes lista){
     }
 
 }
+void imprimirPaciente(apun_pacientes paciente)
+{
+    cout <<"Paciente "<<endl;
+    cout <<"1.Nombres y apellidos: "<<paciente->nombres<<endl;
+    cout <<"2.Cedula: "<<paciente->cedula<<endl;
+    cout <<"3.Fecha de nacimiento: "<<paciente->fnacimiento<<endl;
+    cout <<"4.Sexo: "<<paciente->sexo<<endl;
+    cout <<"5.Direccion: "<<paciente->direccion<<endl;
+
+}
 
 void crearArchivoPaciente(apun_pacientes lista_pacientes){
     ofstream aux;
@@ -195,4 +204,105 @@ void leeArchivoPaciente(apun_pacientes &lista_pacientes){
             
         }
 
+}
+
+apun_pacientes buscarPaciente(apun_pacientes lista, int cedula) {
+    apun_pacientes recorrido = lista;
+    while (recorrido != NULL) {
+        if (recorrido->cedula == cedula) 
+            break;
+        recorrido = recorrido->sig;
+    }
+    return (recorrido);
+}
+bool existePaciente(apun_pacientes lista_pacientes, int cedula) {
+    apun_pacientes paciente;
+    paciente = NULL;
+    bool compro = false;
+    if (lista_pacientes != NULL){
+        paciente = lista_pacientes;
+        while (paciente != NULL) {
+            if (paciente->cedula == cedula) {
+                compro = true;
+                break;
+            }
+            paciente = paciente->sig;
+        }
+    }
+    return (compro);
+}
+int repetirEntero(){
+    string opcion;
+    bool cond=false;;
+    while (!cond)
+    {
+        cin>>opcion;
+        if (verificacionEntero(opcion))
+        {
+            cond=true;
+        }
+        else
+        {
+            cout<<"Valor invalido."<<endl;
+        }  
+    }
+    return stoi(opcion);
+}
+void campoModificarPaciente(apun_pacientes paciente){
+    cout<<"Indique el numero de campo a modificar: "<<endl;
+    int opcion=repetirEntero();
+    while (opcion!=0)
+    {
+        switch (opcion)
+        {
+        case 0:
+            break;
+        case 1:
+            cin.ignore(); //Verificar si funciona mas de una vez el cambio
+            cout<<"Introduzca nombre y apellido: ";
+            paciente->nombres=lineasTexto();
+            break;
+        case 2:
+            paciente->cedula=cedulaPaciente();
+            break;
+        case 3:
+            paciente->fnacimiento=fechaNacPaciente();
+            break;
+        case 4:
+            paciente->sexo=sexoPaciente();
+            break;
+        case 5:
+            cin.ignore();
+            cout<<"Introduzca la direccion: ";
+            paciente->direccion=lineasTexto();
+            break;
+        default:
+            cout<<"Campo invalido"<<endl;
+            break;
+        }
+        cout<<"Si desea modificar otro campo, coloque el numero, sino cooque 0: ";
+        opcion=repetirEntero();
+    }
+}
+void modificarPaciente(apun_pacientes lista_pacientes){
+    int cedula,cond;
+    cond=0;
+    apun_pacientes paciente;
+    cedula=cedulaPaciente();
+    if (existePaciente(lista_pacientes,cedula)){
+        paciente=buscarPaciente(lista_pacientes,cedula);
+        imprimirPaciente(paciente);
+        cout<<endl;
+        campoModificarPaciente(paciente);
+        cout<<"Los datos del paciente fueros modificados correctamente"<<endl;
+        cout<<"**********************"<<endl;
+        imprimirPaciente(paciente);
+        cout<<"**********************"<<endl;
+        crearArchivoPaciente(lista_pacientes);
+    }
+    else
+    {
+        cout<<"No existen registros con esa cedula"<<endl;
+    }
+    
 }
