@@ -1,9 +1,9 @@
 # Proyecto Algoritmos 2            
 
 ### Requerimientos: ###      
-    1.  <s>  Autenticación de usuario. </s>          
-    2.  <s>  Registro de paciente. </s> 
-    3.  <s> Modificación de registro de paciente. </s>          
+    1.  A̶u̶t̶e̶n̶t̶i̶c̶a̶c̶i̶ó̶n̶ ̶d̶e̶ ̶u̶s̶u̶a̶r̶i̶o̶.̶         
+    2.  R̶e̶g̶i̶s̶t̶r̶o̶ ̶d̶e̶ ̶p̶a̶c̶i̶e̶n̶t̶e̶.̶
+    3.  ̶M̶o̶d̶i̶f̶i̶c̶a̶c̶i̶ó̶n̶ ̶d̶e̶ ̶r̶e̶g̶i̶s̶t̶r̶o̶ ̶d̶e̶ ̶p̶a̶c̶i̶e̶n̶t̶e̶.̶          
     4. Registro o actualización de historia.       
     5. Modificación de actualización de historia.           
     6. Mostrar historial de un paciente.                     
