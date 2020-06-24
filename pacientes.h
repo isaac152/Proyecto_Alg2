@@ -1,6 +1,8 @@
 #include <iostream>
 #include <ctype.h>
-#include <fechapac.h>
+#include "fechapac.h"
+#include <fstream>
+
 using namespace std;
 
 struct nodo_pacientes
@@ -14,8 +16,6 @@ struct nodo_pacientes
 };
 typedef struct nodo_pacientes *apun_pacientes;
 apun_pacientes lista_pacientes=NULL;
-
-
 
 bool cedulaRango(int numero){
     if ((numero>=100000) && (numero<=99999999)){
@@ -46,7 +46,7 @@ int cedulaPaciente(){
 }
 char sexoPaciente(){
     char dato;
-    bool confirmacion;
+    bool confirmacion=false;
     while (!confirmacion){
         cout<<"Introduzca sexo del paciente M/F ";
         cin>>dato;
@@ -63,17 +63,28 @@ char sexoPaciente(){
         }
     }
 }
-apun_pacientes crearPaciente(){
+
+
+string lineasTexto(){
+    char linea[500];
+    linea[0]=' ';
+    cin.getline(linea,500);
+    cin.ignore();
+    return linea;
+    
+}
+
+
+apun_pacientes crearPaciente(){ ///llamado iniciar con un cin.ignore()
     apun_pacientes paciente;
     paciente=new(struct nodo_pacientes);
     cout<<"Registro nuevo paciente"<<endl;
     cout<<"Introduzca nombre y apellido: ";
-    cin>>paciente->nombres;
-    cout<<endl;
+    paciente->nombres=lineasTexto();
     paciente->cedula=cedulaPaciente();
     cout<<"Introduzca la direccion: ";
-    cin>>paciente->direccion;
-    cout<<endl;
+    cin.ignore();
+    paciente->direccion=lineasTexto();
     paciente->fnacimiento=fechaNacPaciente();
     paciente->sexo=sexoPaciente();
     paciente->sig=NULL;
@@ -84,6 +95,7 @@ apun_pacientes crearPaciente(){
 void crearListaPacientes(apun_pacientes &pacientes)
 {
     apun_pacientes aux1,aux2;
+
     aux1=crearPaciente();
     if (pacientes==NULL){
         pacientes=aux1;
@@ -98,6 +110,22 @@ void crearListaPacientes(apun_pacientes &pacientes)
     }
     
 }
+void crearListaPacientesArchivo(apun_pacientes &lista_paciente, apun_pacientes paciente )
+{
+    apun_pacientes aux2;
+
+    if (lista_paciente==NULL){
+        lista_paciente=paciente;
+    }
+    else
+    {
+        aux2=lista_paciente;
+        while(aux2->sig!=NULL){
+            aux2=aux2->sig;
+        }
+        aux2->sig=paciente;
+    }
+}   
 
 //Funcion prueba
 
@@ -113,5 +141,58 @@ void mostrarLista(apun_pacientes lista){
         recorrido=recorrido->sig;
 
     }
+
+}
+
+void crearArchivoPaciente(apun_pacientes lista_pacientes){
+    ofstream aux;
+    fstream archivo;
+    apun_pacientes recorrido=lista_pacientes;
+    archivo.open("pacientes.txt",ios::out);
+    if(!archivo.fail())
+        {
+            while(recorrido !=NULL){
+                archivo<<recorrido->nombres<<endl;
+                archivo<<recorrido->cedula<<endl;
+                archivo<<recorrido->fnacimiento<<endl;
+                archivo<<recorrido->sexo<<endl;
+                archivo<<recorrido->direccion<<endl;
+                if (recorrido->sig!=NULL){
+                    archivo<<"***********"<<endl;
+                }
+                else
+                {
+                    archivo<<"***********";
+                }
+                
+                recorrido=recorrido->sig;
+                
+            }
+        }
+    archivo.close();
+}
+void leeArchivoPaciente(apun_pacientes &lista_pacientes){
+    fstream archivo;
+    string linea;
+    apun_pacientes paciente,aux2;
+    archivo.open("pacientes.txt",ios::in);
+    if(!archivo.fail())
+        {
+            while(!archivo.eof())
+            {
+                paciente=new(struct nodo_pacientes);
+                getline(archivo,paciente->nombres);
+                getline(archivo,linea);
+                paciente->cedula=stoi(linea);
+                getline(archivo,paciente->fnacimiento);
+                getline(archivo,linea);
+                paciente->sexo=linea[0];
+                getline(archivo,paciente->direccion);
+                paciente->sig=NULL;
+                crearListaPacientesArchivo(lista_pacientes,paciente);
+                getline(archivo,linea);
+            }
+            
+        }
 
 }
