@@ -1,4 +1,5 @@
 #include <iostream>
+#include <string>
 #include "fechapac.h"
 using namespace std;
 
@@ -26,6 +27,7 @@ historia_paciente crearHistoria(int cedula){
     historia=new(struct nodo_historia);
     cout<<"Historia de paciente:"<<endl;
     historia->cedula_paciente=cedula;
+    /*
 
     cout<<"Sintomas: ";
     historia->sintomas=lineasTextoExtensas();
@@ -43,12 +45,14 @@ historia_paciente crearHistoria(int cedula){
     historia->examenes=lineasTextoExtensas();
     cout<<endl;
 
-    cout<<"Fecha consulta: "<<endl;
-    historia->fconsulta=fechaPaciente();
-
     cout<<"Comentario: ";
     historia->comentario=lineasTextoExtensas();
     cout<<endl;
+    
+    cin.ignore(256,'\n');
+    */
+    cout<<"Fecha consulta: "<<endl;
+    historia->fconsulta=fechaPaciente();
 
     historia->sig=NULL;
     return historia;
@@ -59,17 +63,17 @@ void cambiarFecha(int &dia, int &mes, int &anio,string fecha){
     {
         digito=digito+fecha[i];
     }
-    dia=stoi(digito);
+    dia=atoi(digito.c_str());
     digito="";
     for (int i =3; i<5;i++){
         digito=digito+fecha[i];
     }
-    mes=stoi(digito);
+    mes=atoi(digito.c_str());
     digito="";
     for (int i=6; i<10;i++){
         digito=digito+fecha[i];
     }
-    anio=stoi(digito);
+    anio=atoi(digito.c_str());
 
 }
 bool fechaMayor(int numero1, int numero2){
@@ -105,26 +109,50 @@ bool fechaReciente(string fecha1, string fecha2){
 }
 
 //verificar si las fechas no son iguales
+/*
+void crearListaHistoria(historia_paciente &historial,int cedula){
+    historia_paciente historia,aux2;
+    string fecha1,fecha2;
+    historia=crearHistoria(cedula);
+    if (historial==NULL){
+        historial=historia;
+    }
+    else
+    {
+        aux2=historial;
+        cout<<fechaReciente(fecha1,fecha2)<<endl;
+        while (aux2->sig!=NULL)
+        {
+            aux2=aux2->sig;
+        }
+        aux2->sig=historia;
+        
+    }
+
+}
+*/
 
 void crearListaHistoriaOrdenada(historia_paciente &historial,int cedula){
     historia_paciente aux1,aux2;
     bool cond=false;
     historia_paciente nueva_historia=crearHistoria(cedula);
+    aux1=historial;
     if (historial==NULL){
         historial=nueva_historia;
     }
     else
     {
         if(fechaReciente(nueva_historia->fconsulta,aux1->fconsulta)){//Si la fecha consulta es mas reciente que la de la lista
-            aux1=historial;
-            nueva_historia->sig=aux1;
+            cout<<"Si"<<endl;
+            aux2=historial;
+            nueva_historia->sig=aux2;
             historial=nueva_historia;
+            cond=true;
         }
         else
         {
             while ((aux1->sig!=NULL)&&fechaReciente(aux1->fconsulta,nueva_historia->fconsulta))
-            {
-
+            {   
                 if(fechaReciente(nueva_historia->fconsulta,aux1->fconsulta)){
                     nueva_historia->sig=aux1;
                     aux1=nueva_historia;

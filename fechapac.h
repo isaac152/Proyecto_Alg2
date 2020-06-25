@@ -163,7 +163,7 @@ string fechaPaciente(){
         mes=mesNacimiento();
         anio=anioNacimiento();
         if(fechaCorrecta(dia,mes,anio)){
-            fechadef=to_string(dia)+"/"+to_string(mes)+"/"+to_string(anio);
+            fechadef=cerofecha(dia)+"/"+cerofecha(mes)+"/"+to_string(anio);
             return fechadef;
         }
         else
