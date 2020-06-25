@@ -153,11 +153,10 @@ bool fechaCorrecta(int dia, int mes, int anio){
     }
     
 }
-string fechaNacPaciente(){
+string fechaPaciente(){
     string fechadef="";
     int dia,mes,anio;
     int cond=0;
-    cout<<"Fecha nacimiento paciente "<<endl;
     while (cond==0)
     {
         dia=diaNacimiento();

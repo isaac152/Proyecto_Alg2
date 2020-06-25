@@ -2,6 +2,7 @@
 #include <ctype.h>
 #include "fechapac.h"
 #include <fstream>
+#include "historias.h"
 
 using namespace std;
 
@@ -84,7 +85,8 @@ apun_pacientes crearPaciente(){ ///llamado iniciar con un cin.ignore()
     cout<<"Introduzca la direccion: ";
     cin.ignore();
     paciente->direccion=lineasTexto();
-    paciente->fnacimiento=fechaNacPaciente();
+    cout<<"Fecha nacimiento paciente "<<endl;
+    paciente->fnacimiento=fechaPaciente();
     paciente->sexo=sexoPaciente();
     paciente->sig=NULL;
     return paciente;
@@ -266,7 +268,7 @@ void campoModificarPaciente(apun_pacientes paciente){
             paciente->cedula=cedulaPaciente();
             break;
         case 3:
-            paciente->fnacimiento=fechaNacPaciente();
+            paciente->fnacimiento=fechaPaciente();
             break;
         case 4:
             paciente->sexo=sexoPaciente();
