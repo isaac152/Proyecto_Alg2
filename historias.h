@@ -110,27 +110,6 @@ bool fechaReciente(string fecha1, string fecha2){
 
 //verificar si las fechas no son iguales
 /*
-void crearListaHistoria(historia_paciente &historial,int cedula){
-    historia_paciente historia,aux2;
-    string fecha1,fecha2;
-    historia=crearHistoria(cedula);
-    if (historial==NULL){
-        historial=historia;
-    }
-    else
-    {
-        aux2=historial;
-        cout<<fechaReciente(fecha1,fecha2)<<endl;
-        while (aux2->sig!=NULL)
-        {
-            aux2=aux2->sig;
-        }
-        aux2->sig=historia;
-        
-    }
-
-}
-*/
 
 void crearListaHistoriaOrdenada(historia_paciente &historial,int cedula){
     historia_paciente aux1,aux2;
@@ -164,14 +143,36 @@ void crearListaHistoriaOrdenada(historia_paciente &historial,int cedula){
              }
              if (!cond){
                  aux1->sig=nueva_historia;
+                 //historial=aux1;
              }
         
         
          }
     }
 }
+*/
+void crearListaHistoriaOrdenada(historia_paciente &historial,int cedula){
+    historia_paciente aux1,aux2;
+    historia_paciente nueva_historia=crearHistoria(cedula);
+    aux1=historial;
 
-
+    while ((aux1!=NULL) && (fechaReciente(aux1->fconsulta,nueva_historia->fconsulta)) )
+    {
+        cout<<"entraste"<<endl;
+        aux2=aux1;
+        aux1=aux1->sig;
+    }
+    if (historial==aux1){
+        historial=nueva_historia;
+    }
+    else
+    {
+        aux2->sig=nueva_historia;
+    }
+    nueva_historia->sig=aux1;
+    
+    
+}
 void mostrarLista(historia_paciente lista){
     historia_paciente recorrido;
     recorrido=lista;
