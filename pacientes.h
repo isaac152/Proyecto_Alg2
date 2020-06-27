@@ -13,10 +13,12 @@ struct nodo_pacientes
     string fnacimiento;
     char sexo;
     string direccion;
+    historia_paciente historia=NULL;
     struct nodo_pacientes *sig;
 };
 typedef struct nodo_pacientes *apun_pacientes;
 apun_pacientes lista_pacientes=NULL;
+
 
 bool cedulaRango(int numero){
     if ((numero>=100000) && (numero<=99999999)){
@@ -79,12 +81,12 @@ apun_pacientes crearPaciente(){ ///llamado iniciar con un cin.ignore()
     apun_pacientes paciente;
     paciente=new(struct nodo_pacientes);
     cout<<"Registro nuevo paciente"<<endl;
-    cout<<"Introduzca nombre y apellido: ";
-    paciente->nombres=lineasTexto();
     paciente->cedula=cedulaPaciente();
+    cin.ignore(256,'\n');
+    cout<<"Introduzca nombre y apellido: ";
+    paciente->nombres=lineasTextoExtensas();
     cout<<"Introduzca la direccion: ";
-    cin.ignore();
-    paciente->direccion=lineasTexto();
+    paciente->direccion=lineasTextoExtensas();
     cout<<"Fecha nacimiento paciente "<<endl;
     paciente->fnacimiento=fechaPaciente();
     paciente->sexo=sexoPaciente();
@@ -233,23 +235,6 @@ bool existePaciente(apun_pacientes lista_pacientes, int cedula) {
     }
     return (compro);
 }
-int repetirEntero(){
-    string opcion;
-    bool cond=false;;
-    while (!cond)
-    {
-        cin>>opcion;
-        if (verificacionEntero(opcion))
-        {
-            cond=true;
-        }
-        else
-        {
-            cout<<"Valor invalido."<<endl;
-        }  
-    }
-    return stoi(opcion);
-}
 void campoModificarPaciente(apun_pacientes paciente){
     cout<<"Indique el numero de campo a modificar: "<<endl;
     int opcion=repetirEntero();
@@ -286,16 +271,45 @@ void campoModificarPaciente(apun_pacientes paciente){
         opcion=repetirEntero();
     }
 }
+void cambiarArchivoCedula(int cedula_vieja, int cedula_nueva){
+    ofstream aux;
+    fstream archivo;
+    string linea,cedula_v,cedula_n;
+    cedula_v=to_string(cedula_vieja)+".txt";
+    cedula_n=to_string(cedula_nueva)+".txt";
+    archivo.open(cedula_v,ios::in);
+    if(!archivo.fail())
+    {
+        aux.open(cedula_n,ios::out);
+        if(!aux.fail()){
+            while(!archivo.eof())
+            {
+                getline(archivo,linea);
+                aux<<linea<<endl;
+            }
+            archivo.close();
+        }
+       
+    }
+    aux.close();
+    remove(cedula_v.c_str());
+}
 void modificarPaciente(apun_pacientes lista_pacientes){
     int cedula,cond;
     cond=0;
-    apun_pacientes paciente;
+    apun_pacientes paciente,aux;
     cedula=cedulaPaciente();
     if (existePaciente(lista_pacientes,cedula)){
         paciente=buscarPaciente(lista_pacientes,cedula);
         imprimirPaciente(paciente);
         cout<<endl;
         campoModificarPaciente(paciente);
+        cout<<cedula<<endl;
+        cout<<paciente->cedula<<endl;
+        if(cedula!=paciente->cedula){
+            cout<<"aca"<<endl;
+            cambiarArchivoCedula(cedula,paciente->cedula);
+        }
         cout<<"Los datos del paciente fueros modificados correctamente"<<endl;
         cout<<"**********************"<<endl;
         imprimirPaciente(paciente);

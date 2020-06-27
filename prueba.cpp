@@ -1,34 +1,58 @@
 #include <iostream>
 #include <ctype.h>
-#include "historias.h"
+#include <fstream>
+#include "pacientes.h"
 
 using namespace std;
+void crearArchivo( ){
+    fstream archivo;
+    archivo.open("Pacientes/prueba.txt",ios::out);
+    if(!archivo.fail())
+        {
+                archivo<<"prueba"<<endl;
+                
+        }
+    archivo.close();
+} 
 
 int main(){
-    historia_paciente paciente1,paciente2; 
-    int opcion;
-    bool a=true;
-    crearListaHistoriaOrdenada(lista_historia,25676145);
-    
-    while (a)
-    {
-        cout<<"Desea continuar ";
-        cin>>opcion;
-        if (opcion!=0)
+    int cedula;
+    int b;
+    int a=1;
+    while (a==1)
         {
-            cin.ignore();
-            crearListaHistoriaOrdenada(lista_historia,25676145);
+            crearListaPacientes(lista_pacientes);
+            cout<<"**********"<<endl;
+            cout<<"Quieres introducir otro paciente?"<<endl;
+            cin>>b;
+            if (b==0){
+                a=0;
+            }
+            else
+            {
+                a=1;
+            }
+            
         }
-        else
-        {
-            a=false;
-        }
-        
-        
+    mostrarLista(lista_pacientes);
+    /*
+    apun_pacientes paciente;
+
+    leeArchivoPaciente(lista_pacientes);
+    mostrarLista(lista_pacientes);
+    modificarPaciente(lista_pacientes);
+    /*
+    cout<<"Introduzca cedula de paciente a cambiar: "<<endl;
+    cin>>cedula;
+    if(existePaciente(lista_pacientes,cedula)){
+        paciente=buscarPaciente(lista_pacientes,cedula);
+        crearListaHistoriaOrdenada(paciente->historia,paciente->cedula);
+        mostrarListaHistoria(paciente->historia);
     }
-    paciente1=lista_historia;
-    cout<<paciente1->sintomas<<endl;
-    cout<<endl;
-    mostrarLista(lista_historia);
+    else
+    {
+        cout<<"No existe"<<endl;
+    }*/
+    
     return 0;
 }

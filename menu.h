@@ -2,9 +2,7 @@
 #include "contrasena.h"
 using namespace std;
 
-//limpiar pantalla
-
-
+/*
 void cambioContrasena(){
     string nueva_contrasena,seguridad;
     cout<<"Introduce la actual contrasena"<<endl;
@@ -17,6 +15,7 @@ void cambioContrasena(){
         cambiarContra(nueva_contrasena);
     }
 }
+*/
 
 void logicaMenu(int opcion){
     switch (opcion)
@@ -27,12 +26,7 @@ void logicaMenu(int opcion){
     case 2:
         //funcion citas
         break;
-
     case 3:
-        cambioContrasena();
-        break;
-
-    case 4:
         break;
     
     default:
@@ -51,8 +45,7 @@ void interfazMenu(){
     cout<<"*********************"<<endl;
     cout<<"1-Historias"<<endl;
     cout<<"2-Citas"<<endl;
-    cout<<"3-Cambio contraseña"<<endl;
-    cout<<"4-Salir"<<endl;
+    cout<<"3-Salir"<<endl;
     cin>>opcion;
     logicaMenu(opcion);
 }
