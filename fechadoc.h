@@ -1,4 +1,5 @@
 #include <iostream>
+#include <stdlib.h>
 using namespace std;
 
 
@@ -40,7 +41,7 @@ string diasSemana(int dia){
         return "Domingo";  
         break;
     }
-};
+}
 
 
 semana crearSemana(string dia){
@@ -102,7 +103,7 @@ void asingarHoras(horas &lista_horas,string linea){
         }
         else
         {
-            valor=stoi(copia);
+            valor=atoi(copia.c_str());
             crearListahoras(lista_horas,valor);
             copia="";        
         }

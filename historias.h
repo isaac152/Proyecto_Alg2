@@ -321,6 +321,7 @@ historia_paciente copiarHistoria(historia_paciente historial){
     aux1->examenes=copia->examenes;
     aux1->comentario=copia->comentario;
     aux1->sig=NULL;
+    return aux1;
 }
 void modificarHistoria(historia_paciente  &lista_historia){
     historia_paciente aux=lista_historia;
