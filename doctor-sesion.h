@@ -42,6 +42,11 @@ horas lista_horas=NULL;
 //NOTA: Se hace un llamado a la funcion encriptado pues la contrasena esta encriptada en el archivo
 bool validacion(string user,string pass)
 {
+    cout<<registro_doctor->user<<endl;
+    cout<<user<<endl;
+    cout<<registro_doctor->pass<<endl;
+    cout<<base64_encode(pass,cadena)<<endl;
+    cout<<pass;
     if ((user==registro_doctor->user) && (base64_encode(pass,cadena)==registro_doctor->pass))
         {
             return true;

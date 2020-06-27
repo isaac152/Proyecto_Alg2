@@ -67,21 +67,12 @@ char sexoPaciente(){
     }
 }
 
-string lineasTexto(){
-    char linea[500];
-    linea[0]=' ';
-    cin.getline(linea,500);
-    cin.ignore();
-    return linea;
-    
-}
 
-
-apun_pacientes crearPaciente(){ ///llamado iniciar con un cin.ignore()
+apun_pacientes crearPaciente(int cedula){ ///llamado iniciar con un cin.ignore()
     apun_pacientes paciente;
     paciente=new(struct nodo_pacientes);
     cout<<"Registro nuevo paciente"<<endl;
-    paciente->cedula=cedulaPaciente();
+    paciente->cedula=cedula;
     cin.ignore(256,'\n');
     cout<<"Introduzca nombre y apellido: ";
     paciente->nombres=lineasTextoExtensas();
@@ -92,27 +83,8 @@ apun_pacientes crearPaciente(){ ///llamado iniciar con un cin.ignore()
     paciente->sexo=sexoPaciente();
     paciente->sig=NULL;
     return paciente;
-};
-
-
-void crearListaPacientes(apun_pacientes &pacientes)
-{
-    apun_pacientes aux1,aux2;
-
-    aux1=crearPaciente();
-    if (pacientes==NULL){
-        pacientes=aux1;
-    }
-    else
-    {
-        aux2=pacientes;
-        while(aux2->sig!=NULL){
-            aux2=aux2->sig;
-        }
-        aux2->sig=aux1;
-    }
-    
 }
+
 void crearListaPacientesArchivo(apun_pacientes &lista_paciente, apun_pacientes paciente )
 {
     apun_pacientes aux2;
@@ -130,9 +102,7 @@ void crearListaPacientesArchivo(apun_pacientes &lista_paciente, apun_pacientes p
     }
 }   
 
-//Funcion prueba
-
-void mostrarLista(apun_pacientes lista){
+void mostrarListaPaciente(apun_pacientes lista){
     apun_pacientes recorrido;
     recorrido=lista;
     while(recorrido != NULL){
@@ -245,9 +215,8 @@ void campoModificarPaciente(apun_pacientes paciente){
         case 0:
             break;
         case 1:
-            cin.ignore(); //Verificar si funciona mas de una vez el cambio
             cout<<"Introduzca nombre y apellido: ";
-            paciente->nombres=lineasTexto();
+            paciente->nombres=lineasTextoExtensas();
             break;
         case 2:
             paciente->cedula=cedulaPaciente();
@@ -259,9 +228,8 @@ void campoModificarPaciente(apun_pacientes paciente){
             paciente->sexo=sexoPaciente();
             break;
         case 5:
-            cin.ignore();
             cout<<"Introduzca la direccion: ";
-            paciente->direccion=lineasTexto();
+            paciente->direccion=lineasTextoExtensas();
             break;
         default:
             cout<<"Campo invalido"<<endl;
@@ -269,6 +237,7 @@ void campoModificarPaciente(apun_pacientes paciente){
         }
         cout<<"Si desea modificar otro campo, coloque el numero, sino cooque 0: ";
         opcion=repetirEntero();
+        cin.ignore(); 
     }
 }
 void cambiarArchivoCedula(int cedula_vieja, int cedula_nueva){
@@ -307,7 +276,6 @@ void modificarPaciente(apun_pacientes lista_pacientes){
         cout<<cedula<<endl;
         cout<<paciente->cedula<<endl;
         if(cedula!=paciente->cedula){
-            cout<<"aca"<<endl;
             cambiarArchivoCedula(cedula,paciente->cedula);
         }
         cout<<"Los datos del paciente fueros modificados correctamente"<<endl;
@@ -320,5 +288,35 @@ void modificarPaciente(apun_pacientes lista_pacientes){
     {
         cout<<"No existen registros con esa cedula"<<endl;
     }
+    
+}
+void crearListaPacientes(apun_pacientes &pacientes,int cedula)
+{
+    apun_pacientes aux1,aux2;
+
+    aux1=crearPaciente(cedula);
+    if (pacientes==NULL){
+        pacientes=aux1;
+    }
+    else
+    {
+        aux2=pacientes;
+        while(aux2->sig!=NULL){
+            aux2=aux2->sig;
+        }
+        aux2->sig=aux1;
+    }
+    crearArchivoPaciente(lista_pacientes);
+
+    
+}
+
+apun_pacientes ultimoPaciente(apun_pacientes lista){
+    apun_pacientes aux=lista;
+    while (aux->sig!=NULL)
+    {
+        aux=aux->sig;
+    }
+    return aux;
     
 }

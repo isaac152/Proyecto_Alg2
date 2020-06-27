@@ -120,49 +120,6 @@ bool fechaReciente(string fecha1, string fecha2){
     }
 }
 
-//verificar si las fechas no son iguales
-/*
-
-void crearListaHistoriaOrdenada(historia_paciente &historial,int cedula){
-    historia_paciente aux1,aux2;
-    bool cond=false;
-    historia_paciente nueva_historia=crearHistoria(cedula);
-    aux1=historial;
-    if (historial==NULL){
-        historial=nueva_historia;
-    }
-    else
-    {
-        if(fechaReciente(nueva_historia->fconsulta,aux1->fconsulta)){//Si la fecha consulta es mas reciente que la de la lista
-            cout<<"Si"<<endl;
-            aux2=historial;
-            nueva_historia->sig=aux2;
-            historial=nueva_historia;
-            cond=true;
-        }
-        else
-        {
-            while ((aux1->sig!=NULL)&&fechaReciente(aux1->fconsulta,nueva_historia->fconsulta))
-            {   
-                if(fechaReciente(nueva_historia->fconsulta,aux1->fconsulta)){
-                    nueva_historia->sig=aux1;
-                    aux1=nueva_historia;
-                    cond=true;
-                    break;
-                }
-                aux1=aux1->sig;
-            
-             }
-             if (!cond){
-                 aux1->sig=nueva_historia;
-                 //historial=aux1;
-             }
-        
-        
-         }
-    }
-}
-*/
 void listaHistoriaParemetro(historia_paciente &historial,historia_paciente historia_modificada){
     historia_paciente aux1,aux2;
     aux1=historial;
@@ -181,43 +138,6 @@ void listaHistoriaParemetro(historia_paciente &historial,historia_paciente histo
     }
     historia_modificada->sig=aux1;
     
-}
-void crearListaHistoriaOrdenada(historia_paciente &historial,int cedula){
-    historia_paciente aux1,aux2;
-    historia_paciente nueva_historia=crearHistoria(cedula);
-    aux1=historial;
-
-    while ((aux1!=NULL) && (fechaReciente(aux1->fconsulta,nueva_historia->fconsulta)) )
-    {
-        aux2=aux1;
-        aux1=aux1->sig;
-    }
-    if (historial==aux1){
-        historial=nueva_historia;
-    }
-    else
-    {
-        aux2->sig=nueva_historia;
-    }
-    nueva_historia->sig=aux1;
-    
-    
-}
-void mostrarListaHistoria(historia_paciente lista){
-    historia_paciente recorrido;
-    recorrido=lista;
-    while(recorrido != NULL){
-        //cout<<recorrido->cedula_paciente<<endl;
-        cout<<"Fecha consulta: "<<recorrido->fconsulta<<endl;
-        cout<<"Sintomas: "<<recorrido->sintomas<<endl;
-        cout<<"Diagnostico: "<<recorrido->diagnostico<<endl;
-        cout<<"Recipe: "<<recorrido->recipe<<endl;
-        cout<<"Examenes: "<<recorrido->examenes<<endl;
-        cout<<"Recipes: "<<recorrido->comentario<<endl;
-        recorrido=recorrido->sig;
-
-    }
-
 }
 void crearArchivoHistorial(historia_paciente historial){
     fstream archivo;
@@ -247,10 +167,43 @@ void crearArchivoHistorial(historia_paciente historial){
         }
     archivo.close();
 }
+void crearListaHistoriaOrdenada(historia_paciente &historial,int cedula){
+    historia_paciente aux1,aux2;
+    historia_paciente nueva_historia=crearHistoria(cedula);
+    aux1=historial;
+
+    while ((aux1!=NULL) && (fechaReciente(aux1->fconsulta,nueva_historia->fconsulta)) )
+    {
+        aux2=aux1;
+        aux1=aux1->sig;
+    }
+    if (historial==aux1){
+        historial=nueva_historia;
+    }
+    else
+    {
+        aux2->sig=nueva_historia;
+    }
+    nueva_historia->sig=aux1;
+    crearArchivoHistorial(historial);
+}
+void mostrarListaHistoria(historia_paciente lista){
+    historia_paciente recorrido;
+    recorrido=lista;
+    while(recorrido != NULL){
+        //cout<<recorrido->cedula_paciente<<endl;
+        cout<<"Fecha consulta: "<<recorrido->fconsulta<<endl;
+        cout<<"Sintomas: "<<recorrido->sintomas<<endl;
+        cout<<"Diagnostico: "<<recorrido->diagnostico<<endl;
+        cout<<"Recipe: "<<recorrido->recipe<<endl;
+        cout<<"Examenes: "<<recorrido->examenes<<endl;
+        cout<<"Recipes: "<<recorrido->comentario<<endl;
+        recorrido=recorrido->sig;
+    }
+}
 void crearListaHistoriaArchivo(historia_paciente &lista_historia, historia_paciente historia_reciente)
 {
     historia_paciente aux2;
-
     if (lista_historia==NULL){
         lista_historia=historia_reciente;
     }
@@ -263,11 +216,12 @@ void crearListaHistoriaArchivo(historia_paciente &lista_historia, historia_pacie
         aux2->sig=historia_reciente;
     }
 }  
+
 void leerArchivoHistoria(historia_paciente &historial){
     fstream archivo;
     string linea,cedula_archivo;
     historia_paciente historia_reciente,aux2;
-    cedula_archivo=to_string(historial->cedula_paciente)+".txt";
+    cedula_archivo="Pacientes/"+to_string(historial->cedula_paciente)+".txt";
     archivo.open(cedula_archivo,ios::in);
     if(!archivo.fail())
         {
@@ -348,9 +302,6 @@ void modificarUltimaHistoria(historia_paciente historia){
         opcion=repetirEntero();
         cin.ignore();
     }
-
-
-
 }  
 void borrarHistoria(historia_paciente &lista_historia){
     historia_paciente aux=NULL;
@@ -358,7 +309,6 @@ void borrarHistoria(historia_paciente &lista_historia){
     aux=lista;
     lista_historia=lista_historia->sig;
     delete(lista);
-
 }
 historia_paciente copiarHistoria(historia_paciente historial){
     historia_paciente aux1,copia;
@@ -387,5 +337,48 @@ void modificarHistoria(historia_paciente  &lista_historia){
         listaHistoriaParemetro(lista_historia,historia_modificar);
     }
     crearArchivoHistorial(lista_historia);
-
 }
+
+//verificar si las fechas no son iguales
+/*
+
+void crearListaHistoriaOrdenada(historia_paciente &historial,int cedula){
+    historia_paciente aux1,aux2;
+    bool cond=false;
+    historia_paciente nueva_historia=crearHistoria(cedula);
+    aux1=historial;
+    if (historial==NULL){
+        historial=nueva_historia;
+    }
+    else
+    {
+        if(fechaReciente(nueva_historia->fconsulta,aux1->fconsulta)){//Si la fecha consulta es mas reciente que la de la lista
+            cout<<"Si"<<endl;
+            aux2=historial;
+            nueva_historia->sig=aux2;
+            historial=nueva_historia;
+            cond=true;
+        }
+        else
+        {
+            while ((aux1->sig!=NULL)&&fechaReciente(aux1->fconsulta,nueva_historia->fconsulta))
+            {   
+                if(fechaReciente(nueva_historia->fconsulta,aux1->fconsulta)){
+                    nueva_historia->sig=aux1;
+                    aux1=nueva_historia;
+                    cond=true;
+                    break;
+                }
+                aux1=aux1->sig;
+            
+             }
+             if (!cond){
+                 aux1->sig=nueva_historia;
+                 //historial=aux1;
+             }
+        
+        
+         }
+    }
+}
+*/

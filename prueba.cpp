@@ -1,40 +1,11 @@
 #include <iostream>
-#include <ctype.h>
-#include <fstream>
-#include "pacientes.h"
+#include "base64.cpp"
 
 using namespace std;
-void crearArchivo( ){
-    fstream archivo;
-    archivo.open("Pacientes/prueba.txt",ios::out);
-    if(!archivo.fail())
-        {
-                archivo<<"prueba"<<endl;
-                
-        }
-    archivo.close();
-} 
 
 int main(){
-    int cedula;
-    int b;
-    int a=1;
-    while (a==1)
-        {
-            crearListaPacientes(lista_pacientes);
-            cout<<"**********"<<endl;
-            cout<<"Quieres introducir otro paciente?"<<endl;
-            cin>>b;
-            if (b==0){
-                a=0;
-            }
-            else
-            {
-                a=1;
-            }
-            
-        }
-    mostrarLista(lista_pacientes);
+    cout<<base64_encode("12345678",true)<<endl;
+    cout<<base64_decode("MTIzNDU2Nzg.",true)<<endl;
     /*
     apun_pacientes paciente;
 

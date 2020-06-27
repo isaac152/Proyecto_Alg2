@@ -1,5 +1,7 @@
 #include <iostream>
 #include "contrasena.h"
+#include "menuhistoria.h"
+#include <stdlib.h>
 using namespace std;
 
 /*
@@ -17,28 +19,7 @@ void cambioContrasena(){
 }
 */
 
-void logicaMenu(int opcion){
-    switch (opcion)
-    {
-    case 1:
-        //Funcion historias
-        break;
-    case 2:
-        //funcion citas
-        break;
-    case 3:
-        break;
-    
-    default:
-        cout<<"Valor invalido. Intente de nuevo"<<endl;
-        cin.get();
-        break;
-    }
-
-}
-
 void interfazMenu(){
-    int opcion;
     cout<<"Bienvenido "<<registro_doctor->nombre<<endl;
     cout<<"*********************"<<endl;
     cout<<"******opciones*******"<<endl;
@@ -46,6 +27,31 @@ void interfazMenu(){
     cout<<"1-Historias"<<endl;
     cout<<"2-Citas"<<endl;
     cout<<"3-Salir"<<endl;
-    cin>>opcion;
-    logicaMenu(opcion);
+}
+
+void logicaMenu(){
+    int opcion=0;
+    while (opcion!=3)
+    {
+    interfazMenu();
+    opcion=repetirEntero();
+        switch (opcion)
+        {
+        case 1:
+            menuHistoria();
+            break;
+        case 2:
+            //funcion citas
+            break;
+        case 3:
+            break;
+        
+        default:
+            cout<<"Valor invalido. Intente de nuevo"<<endl;
+            cin.get();
+            break;
+        }
+    system("CLS");
+    }
+
 }
