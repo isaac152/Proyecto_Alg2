@@ -1,6 +1,5 @@
 #include <iostream>
 #include <ctype.h>
-#include "fechapac.h"
 #include <fstream>
 #include "historias.h"
 
@@ -13,6 +12,7 @@ struct nodo_pacientes
     string fnacimiento;
     char sexo;
     string direccion;
+    apun_citas citas=NULL;
     historia_paciente historia=NULL;
     struct nodo_pacientes *sig;
 };

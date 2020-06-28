@@ -26,13 +26,12 @@ struct doctor {
     string especializacion;
     semana dias;
     horas horas_lab;
+    int anio_sesion;
 };
 bool cadena;
 typedef struct doctor *Doc;
 //Inicializacion de tipo de dato- Doctor- Como null y variable global
 Doc registro_doctor=NULL;
-semana lista_semana=NULL;
-horas lista_horas=NULL;
 
 
 
@@ -128,9 +127,11 @@ bool datoSesion(){
     }
 //Funcion que verifica la existencia del archivo doctor y llena la estructura doctor con los datos
 //dentro del archivo
-bool crearDoctor(Doc &registro, semana &lista_semana){
+bool crearDoctor(Doc &registro){
     fstream archivo;
     string linea;
+    semana lista_semana;
+    horas lista_horas;
     registro=new(struct doctor);
     archivo.open("doctor.txt", ios::in);
     if (!archivo.fail())
@@ -146,6 +147,8 @@ bool crearDoctor(Doc &registro, semana &lista_semana){
                 registro->dias=lista_semana;
                 getline(archivo,linea);
                 asingarHoras(lista_horas,linea);
+                getline(archivo,linea);
+                registro->anio_sesion=atoi(linea.c_str());
                 registro->horas_lab=lista_horas;
                 break;
             }
@@ -163,7 +166,7 @@ bool crearDoctor(Doc &registro, semana &lista_semana){
 //No finaliza hasta que datosSesion retorne verdadero.
 bool inicioSesion(){
     cout<<"APP MEDICA"<<endl;
-    crearDoctor(registro_doctor,lista_semana);
+    crearDoctor(registro_doctor);
     cout<<registro_doctor->user<<endl;
     cout<<registro_doctor->pass<<endl;
     cout<<base64_decode(registro_doctor->pass,cadena)<<endl;;

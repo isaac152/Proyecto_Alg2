@@ -11,6 +11,7 @@ struct nodo_dia
 struct nodo_hora
 {
     int hora;
+    bool disponibilidad;
     struct nodo_hora* sig=NULL;
 };
 typedef struct nodo_dia *semana;
@@ -37,7 +38,7 @@ string diasSemana(int dia){
     case 6:
         return "Sabado";  
         break;
-    case 7:
+    case 0:
         return "Domingo";  
         break;
     }
@@ -55,6 +56,7 @@ horas crearHoras(int hora){
     horas horas_elemento;
     horas_elemento=new(struct nodo_hora);
     horas_elemento->hora=hora;
+    horas_elemento->disponibilidad=true;
     horas_elemento->sig=NULL;
     return horas_elemento;
 }

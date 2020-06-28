@@ -154,6 +154,17 @@ bool fechaCorrecta(int dia, int mes, int anio){
     }
     
 }
+
+string formatoFecha(int d, int m, int a){
+    string dia, mes, anio,fechadef;
+    dia=cerofecha(d);
+    mes=cerofecha(m);
+    anio=to_string(a);
+    fechadef=dia+"/"+mes+"/"+anio;
+    return fechadef;
+    
+}
+
 string fechaPaciente(){
     string fechadef="";
     int dia,mes,anio;
@@ -164,8 +175,7 @@ string fechaPaciente(){
         mes=mesNacimiento();
         anio=anioNacimiento();
         if(fechaCorrecta(dia,mes,anio)){
-            fechadef=cerofecha(dia)+"/"+cerofecha(mes)+"/"+to_string(anio);
-            return fechadef;
+            return formatoFecha(dia,mes,anio);
         }
         else
         {

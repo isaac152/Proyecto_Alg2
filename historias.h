@@ -1,6 +1,8 @@
 #include <iostream>
 #include <string>
 #include <fstream>
+#include "citas.h"
+
 using namespace std;
 
 struct nodo_historia {
