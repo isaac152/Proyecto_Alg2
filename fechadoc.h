@@ -1,8 +1,8 @@
 #include <iostream>
 #include <stdlib.h>
 using namespace std;
-
-
+#ifndef FECHADOC_H
+#define FECHADOC_H
 struct nodo_dia
 {
     string dia;
@@ -124,3 +124,4 @@ void asignarSemana(string linea, semana &lista_semana){
     }
     
 }
+#endif

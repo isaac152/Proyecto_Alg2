@@ -1,6 +1,6 @@
 #include <iostream>
 #include "fechapac.h"
-#include "doctor-sesion.h"
+#include "doctorsesion.h"
 //#include "fechadoc.h"
 
 using namespace std;

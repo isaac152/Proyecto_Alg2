@@ -3,6 +3,7 @@
 #include "base64.cpp"
 #include "fechadoc.h"
 using namespace std;
+#pragma once
 
 //Libreria encargada de leer el archivo doctor y asignar sus valores a su respectivo nodo
 //Encargarse del inicio de sesion del doctor
@@ -24,10 +25,11 @@ struct doctor {
     string pass;
     string nombre;
     string especializacion;
-    semana dias;
-    horas horas_lab;
+    semana dias=NULL;
+    horas horas_lab=NULL;
     int anio_sesion;
 };
+
 bool cadena;
 typedef struct doctor *Doc;
 //Inicializacion de tipo de dato- Doctor- Como null y variable global
@@ -127,31 +129,10 @@ bool datoSesion(){
     }
 //Funcion que verifica la existencia del archivo doctor y llena la estructura doctor con los datos
 //dentro del archivo
-bool crearDoctor(Doc &registro){
+bool verifiArchivoDoctor(){
     fstream archivo;
-    string linea;
-    semana lista_semana;
-    horas lista_horas;
-    registro=new(struct doctor);
-    archivo.open("doctor.txt", ios::in);
-    if (!archivo.fail())
-    {
-        while(!archivo.eof())
-            {
-                getline(archivo,registro->user);
-                getline(archivo,registro->pass);
-                getline(archivo,registro->nombre);
-                getline(archivo,registro->especializacion);
-                getline(archivo,linea);
-                asignarSemana(linea,lista_semana);
-                registro->dias=lista_semana;
-                getline(archivo,linea);
-                asingarHoras(lista_horas,linea);
-                getline(archivo,linea);
-                registro->anio_sesion=atoi(linea.c_str());
-                registro->horas_lab=lista_horas;
-                break;
-            }
+    archivo.open("doctor.txt",ios::in);
+    if (!archivo.fail()){
         return true;
     }
     else
@@ -159,19 +140,59 @@ bool crearDoctor(Doc &registro){
         return false;
     }
     archivo.close();
+    
+}
+
+
+
+Doc crearDoctor(){
+    fstream archivo;
+    string linea;
+    semana lista_semana;
+    horas lista_horas;
+    Doc registro;
+    registro=new(struct doctor);
+    archivo.open("doctor.txt", ios::in);
+    while(!archivo.eof())
+            {
+                getline(archivo,registro->user);
+                getline(archivo,registro->pass);
+                getline(archivo,registro->nombre);
+                getline(archivo,registro->especializacion);
+                getline(archivo,linea);
+                //
+                asignarSemana(linea,lista_semana);
+                registro->dias=lista_semana;
+                getline(archivo,linea);
+                asingarHoras(lista_horas,linea);
+                registro->horas_lab=lista_horas;
+                getline(archivo,linea);
+                registro->anio_sesion=atoi(linea.c_str());
+                break;
+            }
+        return registro;
+    archivo.close();
 }
 
 //Llamada principal de inicio de sesion.  
 //Verifica que el archivo doctor funcionara correctamente 
 //No finaliza hasta que datosSesion retorne verdadero.
-bool inicioSesion(){
+bool inicioSesion(Doc &registro_doctor){
+    Doc doctor;
+    doctor=registro_doctor;
     cout<<"APP MEDICA"<<endl;
-    crearDoctor(registro_doctor);
-    cout<<registro_doctor->user<<endl;
-    cout<<registro_doctor->pass<<endl;
-    cout<<base64_decode(registro_doctor->pass,cadena)<<endl;;
+    if(verifiArchivoDoctor()){
+     doctor=crearDoctor();
+    }
+    else
+    {
+        cout<<"Archivo invalido"<<endl;
+    }
+    cout<<doctor->user<<endl;
+    cout<<doctor->pass<<endl;
+    cout<<base64_decode(doctor->pass,cadena)<<endl;;
 
-    if (datoSesion() && registro_doctor!=NULL){
+    if (datoSesion() && verifiArchivoDoctor()){
         return true;
     }
     else
