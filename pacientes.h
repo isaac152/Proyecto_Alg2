@@ -1,7 +1,9 @@
 #include <iostream>
 #include <ctype.h>
 #include <fstream>
+#include "fechapac.h"
 #include "historias.h"
+//#include "citas.h"
 
 using namespace std;
 
@@ -12,7 +14,6 @@ struct nodo_pacientes
     string fnacimiento;
     char sexo;
     string direccion;
-    apun_citas citas=NULL;
     historia_paciente historia=NULL;
     struct nodo_pacientes *sig;
 };
@@ -31,11 +32,10 @@ bool cedulaRango(int numero){
 
 int cedulaPaciente(){
     string dato;
-    bool confirmacion;
+    bool confirmacion=false;
     while (!confirmacion){
         cout<<"Introduzca el numero de cedula: ";
         cin>>dato;
-        cout<<endl;
         if(verificacionEntero(dato) && cedulaRango(stoi(dato))){
             return stoi(dato);
         }
@@ -46,6 +46,7 @@ int cedulaPaciente(){
         }
         
     }
+    return 0;
 }
 char sexoPaciente(){
     char dato;
@@ -65,6 +66,7 @@ char sexoPaciente(){
             confirmacion=false;
         }
     }
+    return ' ';
 }
 
 
@@ -81,6 +83,7 @@ apun_pacientes crearPaciente(int cedula){ ///llamado iniciar con un cin.ignore()
     cout<<"Fecha nacimiento paciente "<<endl;
     paciente->fnacimiento=fechaPaciente();
     paciente->sexo=sexoPaciente();
+    paciente->historia=NULL;
     paciente->sig=NULL;
     return paciente;
 }
@@ -157,6 +160,7 @@ void crearArchivoPaciente(apun_pacientes lista_pacientes){
 void leeArchivoPaciente(apun_pacientes &lista_pacientes){
     fstream archivo;
     string linea;
+    historia_paciente historia;
     apun_pacientes paciente,aux2;
     archivo.open("pacientes.txt",ios::in);
     if(!archivo.fail())
@@ -171,6 +175,14 @@ void leeArchivoPaciente(apun_pacientes &lista_pacientes){
                 getline(archivo,linea);
                 paciente->sexo=linea[0];
                 getline(archivo,paciente->direccion);
+                if(existeArchivoHistoria(paciente->cedula)){
+                    historia=leerArchivoHistoria(paciente->cedula);
+                    paciente->historia=historia;
+                 }
+                 else
+                {
+                      paciente->historia=NULL;
+                }
                 paciente->sig=NULL;
                 crearListaPacientesArchivo(lista_pacientes,paciente);
                 getline(archivo,linea);
@@ -206,8 +218,10 @@ bool existePaciente(apun_pacientes lista_pacientes, int cedula) {
     return (compro);
 }
 void campoModificarPaciente(apun_pacientes paciente){
+    string linea;
     cout<<"Indique el numero de campo a modificar: "<<endl;
     int opcion=repetirEntero();
+    cin.ignore(); 
     while (opcion!=0)
     {
         switch (opcion)
@@ -216,7 +230,8 @@ void campoModificarPaciente(apun_pacientes paciente){
             break;
         case 1:
             cout<<"Introduzca nombre y apellido: ";
-            paciente->nombres=lineasTextoExtensas();
+            linea=lineasTextoExtensas();
+            paciente->nombres=linea ;
             break;
         case 2:
             paciente->cedula=cedulaPaciente();
@@ -244,8 +259,8 @@ void cambiarArchivoCedula(int cedula_vieja, int cedula_nueva){
     ofstream aux;
     fstream archivo;
     string linea,cedula_v,cedula_n;
-    cedula_v=to_string(cedula_vieja)+".txt";
-    cedula_n=to_string(cedula_nueva)+".txt";
+    cedula_v="Pacientes/"+to_string(cedula_vieja)+".txt";
+    cedula_n="Pacientes/"+to_string(cedula_nueva)+".txt";
     archivo.open(cedula_v,ios::in);
     if(!archivo.fail())
     {
@@ -273,8 +288,6 @@ void modificarPaciente(apun_pacientes lista_pacientes){
         imprimirPaciente(paciente);
         cout<<endl;
         campoModificarPaciente(paciente);
-        cout<<cedula<<endl;
-        cout<<paciente->cedula<<endl;
         if(cedula!=paciente->cedula){
             cambiarArchivoCedula(cedula,paciente->cedula);
         }
@@ -319,4 +332,16 @@ apun_pacientes ultimoPaciente(apun_pacientes lista){
     }
     return aux;
     
+}
+string obtenerNombre(int cedula){
+    apun_pacientes recorrido=lista_pacientes;
+    while (recorrido!=NULL)
+    {
+        if (recorrido->cedula==cedula)
+        {
+            return recorrido->nombres;
+        }
+        recorrido=recorrido->sig;
+    }
+    return NULL; 
 }

@@ -3,7 +3,6 @@
 #include "base64.cpp"
 #include "fechadoc.h"
 using namespace std;
-#pragma once
 
 //Libreria encargada de leer el archivo doctor y asignar sus valores a su respectivo nodo
 //Encargarse del inicio de sesion del doctor
@@ -25,15 +24,16 @@ struct doctor {
     string pass;
     string nombre;
     string especializacion;
-    semana dias=NULL;
-    horas horas_lab=NULL;
+    semana dias;
+    horas horas_lab;
     int anio_sesion;
 };
-
 bool cadena;
 typedef struct doctor *Doc;
 //Inicializacion de tipo de dato- Doctor- Como null y variable global
 Doc registro_doctor=NULL;
+semana lista_semana=NULL;
+horas lista_horas=NULL;
 
 
 
@@ -43,11 +43,6 @@ Doc registro_doctor=NULL;
 //NOTA: Se hace un llamado a la funcion encriptado pues la contrasena esta encriptada en el archivo
 bool validacion(string user,string pass)
 {
-    cout<<registro_doctor->user<<endl;
-    cout<<user<<endl;
-    cout<<registro_doctor->pass<<endl;
-    cout<<base64_encode(pass,cadena)<<endl;
-    cout<<pass;
     if ((user==registro_doctor->user) && (base64_encode(pass,cadena)==registro_doctor->pass))
         {
             return true;
@@ -59,27 +54,27 @@ bool validacion(string user,string pass)
 }
 //Funcion que verifica si el user o la contrasena, tiene mas de 6 cacteres sin espacio
 bool verificacionCaracteres(string parametro){
+    bool a=true;
     if (parametro.length()>=6)
     {
         for (int i = 0; i < parametro.length(); i++)
         {
             if (parametro[i] == ' ')
-            {
+            {  
+                a=false;
                 return false;
-            }
-            else
-            {
-                return true;
-            }
-            
+    
+            }            
         }
-        
+        if(a){
+            return true;
+        }
     }
     else
     {
         return false;
     }
-    
+    return NULL;
 }
 
 //Funcion que hace un llamado a las dos validaciones anteriores y devuelve el valor booleano 
@@ -114,53 +109,55 @@ bool datoSesion(){
     cout<<"Introduzca el username: ";
     cin>>user;
     cout<<" "<<endl;
-    cout<<"Introduzca la contraseña: ";
+    cout<<"Introduzca la contrasena: ";
     cin>>pass;
     cout<<" "<<endl;
     if (entrada(user,pass)){
         return true;
-    }
+        }
     else
-    {
+        {
         cout<<"Intente de nuevo."<<endl;
         cout<<"********************"<<endl;
-        datoSesion(); // Recursividad, siempre debe dar positivo
-    }
-    }
-//Funcion que verifica la existencia del archivo doctor y llena la estructura doctor con los datos
-//dentro del archivo
-bool verifiArchivoDoctor(){
-    fstream archivo;
-    archivo.open("doctor.txt",ios::in);
-    if (!archivo.fail()){
-        return true;
-    }
-    else
-    {
         return false;
+        }
     }
-    archivo.close();
+
+void nuevoIntento(){
+    bool a=true;
+    while (a)
+    {
+        cout<<" "<<endl;
+        if (datoSesion())
+        {
+            a=false;
+            break;
+        }
+        else
+        {
+            a=true;
+        }
+        
+    }
     
 }
 
-
-
-Doc crearDoctor(){
+//Funcion que verifica la existencia del archivo doctor y llena la estructura doctor con los datos
+//dentro del archivo
+void crearDoctor(Doc &registro, semana &lista_semana){
     fstream archivo;
     string linea;
-    semana lista_semana;
-    horas lista_horas;
-    Doc registro;
     registro=new(struct doctor);
     archivo.open("doctor.txt", ios::in);
-    while(!archivo.eof())
+    if (!archivo.fail())
+    {
+        while(!archivo.eof())
             {
                 getline(archivo,registro->user);
                 getline(archivo,registro->pass);
                 getline(archivo,registro->nombre);
                 getline(archivo,registro->especializacion);
                 getline(archivo,linea);
-                //
                 asignarSemana(linea,lista_semana);
                 registro->dias=lista_semana;
                 getline(archivo,linea);
@@ -170,29 +167,22 @@ Doc crearDoctor(){
                 registro->anio_sesion=atoi(linea.c_str());
                 break;
             }
-        return registro;
+    }
+    registro->dias->horas_dis=registro_doctor->horas_lab; 
     archivo.close();
 }
 
 //Llamada principal de inicio de sesion.  
 //Verifica que el archivo doctor funcionara correctamente 
 //No finaliza hasta que datosSesion retorne verdadero.
-bool inicioSesion(Doc &registro_doctor){
-    Doc doctor;
-    doctor=registro_doctor;
+bool inicioSesion(){
     cout<<"APP MEDICA"<<endl;
-    if(verifiArchivoDoctor()){
-     doctor=crearDoctor();
-    }
-    else
-    {
-        cout<<"Archivo invalido"<<endl;
-    }
-    cout<<doctor->user<<endl;
-    cout<<doctor->pass<<endl;
-    cout<<base64_decode(doctor->pass,cadena)<<endl;;
-
-    if (datoSesion() && verifiArchivoDoctor()){
+    crearDoctor(registro_doctor,lista_semana);
+    cout<<registro_doctor->user<<endl;
+    cout<<registro_doctor->pass<<endl;
+    cout<<base64_decode(registro_doctor->pass,cadena)<<endl;;
+    nuevoIntento();
+    if (registro_doctor!=NULL){
         return true;
     }
     else

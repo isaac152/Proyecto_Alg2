@@ -1,8 +1,5 @@
 #include <iostream>
-#include "fechapac.h"
-#include "doctorsesion.h"
-//#include "fechadoc.h"
-
+#include <string>
 using namespace std;
 
 struct nodo_cita{
@@ -25,26 +22,27 @@ typedef struct nodo_cita *apun_citas;
 calendario calendario_app=NULL;
 apun_citas lista_citas=NULL;
 
-int algoritmoDia(int dia,int mes,int anio)
-{
-    int y,m,dia_semana;
-	y = anio - (14-mes)/12;
-	m = mes +12 * ((14-mes) / 12) -2;
-	dia_semana= ( dia+ y + y / 4 - y / 100 + y / 400 + (31 * m / 12)) % 7;
-    return dia_semana;
-}
-string fechaActual(){
-    string fechaAct="";
+
+calendario fechaActual(calendario calendario_app){
     int dia,mes;
     int cond=0;
     int anio=registro_doctor->anio_sesion;
+    calendario fecha_actual=calendario_app;
     while (cond==0)
     {
         dia=diaNacimiento();
         mes=mesNacimiento();
         
         if(fechaCorrecta(dia,mes,anio)){
-            return formatoFecha(dia,mes,anio);
+            while (fecha_actual !=NULL)
+            {
+                if ((fecha_actual->dia==dia) && (fecha_actual->mes==mes) && (fecha_actual->anio==anio)){
+                    return fecha_actual;
+                    break;
+                }
+                fecha_actual=fecha_actual->sig;
+            }
+            
         }
         else
         {
@@ -53,117 +51,23 @@ string fechaActual(){
         }
         
     }
+    return NULL;
 }
-calendario crearFecha(int dia, int mes, int anio){
-    calendario fecha;
-    int dia_semana;
-    fecha=new(struct nodo_calendario);
-    fecha->dia=dia;
-    fecha->mes=mes;
-    fecha->anio=anio;
-    dia_semana=algoritmoDia(dia,mes,anio);
-    fecha->dia_semana=diasSemana(dia_semana);
-    fecha->lista_horas=registro_doctor->horas_lab;
-    fecha->disponibilidad=true;
-    return fecha;
-}
-
-void crearCalendario(calendario &calendario_app,calendario fechas){
-    calendario aux1;
-    if(calendario_app==NULL){
-        calendario_app=fechas;
-    }
-    else
-    {
-        aux1=calendario_app;
-    while (aux1->sig!=NULL)
-    {
-        aux1=aux1->sig;
-    }
-    aux1->sig=fechas;
-    }
-    
-}
-void generarFecha(calendario &calendario_app){
-    calendario fecha;
-    int anio=registro_doctor->anio_sesion;
-    int contador=0;
-    for (int i = 1; i < 13; i++)
-    {
-        for (int j = 1; j < 32; j++)
-        {
-            if (fechaCorrecta(j,i,anio))
-            {
-
-                fecha=crearFecha(j,i,anio);
-                crearCalendario(calendario_app,fecha);
-
-            }
-            
-        }
-        
-    }
-    
-}
-
-string mostrarHoras(horas horas_dia){
-    horas recorrido;
-    string aux;
-    string horas_t="";
-    recorrido=horas_dia;
+bool diasDisponible(calendario calendario_app){
+    calendario fecha=calendario_app;
+    horas recorrido= fecha->lista_horas;
+    bool disponibilidad=false;
+    bool aux=false;
     while (recorrido!=NULL)
-    {
-        aux=to_string(recorrido->hora);
-        if (recorrido->sig!=NULL)
-        {
-            horas_t=horas_t+aux+",";
-        }
-        else
-        {
-            horas_t=horas_t+aux;
-        }   
+    {   
+        aux=recorrido->disponibilidad;
+        disponibilidad=disponibilidad || aux;
         recorrido=recorrido->sig;
     }
-    return horas_t;
+    return disponibilidad;
     
 }
-string mostrarSemana(semana dias_semana){
-    semana recorrido;
-    string aux;
-    string dias="";
-    recorrido=dias_semana;
-    while (recorrido!=NULL)
-    {
-        aux=recorrido->dia;
-        if (recorrido->sig!=NULL)
-        {
-            dias=dias+aux+",";
-        }
-        else
-        {
-            dias=dias+aux;
-        }   
-        recorrido=recorrido->sig;
-    }
-    return dias;
-    
-}
-void mostrarFecha(calendario fechas){
-    calendario recorrido;
-    int dia,mes,anio;
-    string formato,horas;
-    recorrido=fechas;
-    while(recorrido != NULL){
-        dia=recorrido->dia;
-        mes=recorrido->mes;
-        anio=recorrido->anio;
-        formato=formatoFecha(dia,mes,anio);
-        horas=mostrarHoras(recorrido->lista_horas);
-        cout<<recorrido->dia_semana<<" - "<<formato<<" - "<<horas<<endl;
-        recorrido=recorrido->sig;
-    }
 
-}
 bool comprobarFecha(string dia,semana dias_lab){
     semana dias_recorrido=dias_lab;
     bool validacion=true;
@@ -185,21 +89,46 @@ bool comprobarFecha(string dia,semana dias_lab){
     if(validacion==false){
         return false;
     }
-
+    return NULL;
 }
-
-
-
-
+calendario fechaConsulta(calendario calendario_app){
+    bool cond=true;
+    calendario fecha;
+    string formato;
+    int anio=registro_doctor->anio_sesion;
+    while (cond){
+        cout<<"Introduzca la fecha de consulta: "<<endl;
+        int dia=diaNacimiento();
+        int mes=mesNacimiento(); 
+        if(fechaCorrecta(dia,mes,anio)){
+                fecha=buscarFecha(calendario_app,dia,mes,anio);
+                if((fecha->disponibilidad==true) && (comprobarFecha(fecha->dia_semana,lista_semana)))
+                {
+                    return fecha;
+                }
+                else
+                {
+                    cout<<"Fecha no laborable. Intente de nuevo"<<endl;
+                }
+                
+            }
+            else
+            {
+                cout<<"Fecha invalida. Intente de nuevo"<<endl;
+                cond=0;
+            }   
+        }
+    return NULL;
+}
 void fechasDisponibles(calendario calendario_app){
-    calendario recorrido;
+    cout<<"Introduzca la fecha actual: "<<endl;
+    calendario recorrido=fechaActual(calendario_app);
     string formato,horas;
     int dia,mes,anio;
     int contador=0;
-    cout<<"aca"<<endl;
-    recorrido=calendario_app;
     while((recorrido!=NULL) && (contador<30)){
-        if(comprobarFecha(recorrido->dia_semana,registro_doctor->dias))
+        cout<<"aca"<<endl;
+        if((comprobarFecha(recorrido->dia_semana,lista_semana)) && (diasDisponible(recorrido)))
         { 
         dia=recorrido->dia;
         mes=recorrido->mes;
@@ -212,29 +141,94 @@ void fechasDisponibles(calendario calendario_app){
         }
         recorrido=recorrido->sig;
     }
-
+}
+bool verificarHoraConsulta(int hora, horas lista_horas){
+    horas recorrido=lista_horas;
+    while (recorrido!=NULL)
+    {
+        if(recorrido->hora==hora){
+            return true;
+            break;
+        }
+        recorrido=recorrido->sig;
+   }
+    return false;
+}
+int horaConsulta(){
+    string hora;
+    int cond=0;
+    while (cond==0){
+        cout<<"Hora ";
+        cin>>hora;
+        cout<<endl;
+        if((verificacionEntero(hora) && (verificarHoraConsulta(stoi(hora),lista_horas))))
+        {
+            return stoi(hora);
+        }
+        else
+        {
+            cout<<"Hora invalida. Intenta de nuevo"<<endl;
+            cond=0;
+        }
+        
+    }
+    return 0;
+}
+int elegirHoraConsulta(calendario &calendario_app){
+    int hora=horaConsulta();
+    calendario fecha=calendario_app;
+    horas hora_consulta=fecha->lista_horas;
+    while (hora_consulta!=NULL)
+    {
+        if ((hora_consulta->hora==hora)&&(hora_consulta->disponibilidad==true))
+        {
+            hora_consulta->disponibilidad=false;
+            return hora;
+            break;    
+        }
+        hora_consulta=hora_consulta->sig;
+    }
+    
 }
 
-string consolidarFechaCita(){
-    string fecha_actual;
-    fecha_actual=fechaActual();
-
-}
-
-/*
-apun_citas crearCita(int cedula){
+apun_citas crearCita(int cedula,calendario calendario_app){
     apun_citas cita;
+    calendario fecha;
     cita=new(struct nodo_cita);
     cita->cedula_paciente=cedula;
-
-    cita->fecha_consulta=fechaPaciente();*/
-    /*
-    fecha->dia=dia;
-    fecha->mes=mes;
-    fecha->anio=anio;
-    fecha->dia_semana=algoritmoDia(dia,mes,anio);
-    fecha->disponibilidad=true;
-    return fecha;
+    fechasDisponibles(calendario_app);
+    fecha=fechaConsulta(calendario_app);
+    cita->fecha_consulta=mostrarFecha(fecha);
+    cita->hora_consulta=elegirHoraConsulta(fecha);
+    cita->sig=NULL;
+    return cita;
 }
-    
-    */
+
+void crearListaCitas(apun_citas &citas,int cedula){
+    apun_citas aux1,aux2;
+    apun_citas nueva_cita=crearCita(cedula,calendario_app);
+    aux1=citas;
+    while ((aux1!=NULL) && (fechaReciente(aux1->fecha_consulta,nueva_cita->fecha_consulta)) )
+    {
+        aux2=aux1;
+        aux1=aux1->sig;
+    }
+    if (citas==aux1){
+        citas=nueva_cita;
+    }
+    else
+    {
+        aux2->sig=nueva_cita;
+    }
+    nueva_cita->sig=aux1;
+}
+void mostrarListaCitas(apun_citas lista){
+    apun_citas recorrido;
+    recorrido=lista;
+    while(recorrido != NULL){
+        //cout<<recorrido->cedula_paciente<<endl;
+        cout<<"Fecha cita : "<<recorrido->fecha_consulta<<endl;
+        cout<<"Hora de consulta : "<<recorrido->hora_consulta<<endl;
+        recorrido=recorrido->sig;
+    }
+}

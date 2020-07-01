@@ -1,8 +1,6 @@
 #include <iostream>
 #include <string>
 #include <fstream>
-#include "citas.h"
-
 using namespace std;
 
 struct nodo_historia {
@@ -141,11 +139,27 @@ void listaHistoriaParemetro(historia_paciente &historial,historia_paciente histo
     historia_modificada->sig=aux1;
     
 }
+bool existeArchivoHistoria(int cedula){
+    fstream archivo;
+    string cedula_archivo;
+    cedula_archivo="Pacientes/"+to_string(cedula)+".txt";
+    archivo.open(cedula_archivo,ios::in);
+    if(!archivo.fail())
+        {
+            return true;
+        }
+    else
+    {
+        return false;
+    }
+    
+
+}
 void crearArchivoHistorial(historia_paciente historial){
     fstream archivo;
     string cedula_archivo;
     historia_paciente recorrido=historial;
-    cedula_archivo=to_string(historial->cedula_paciente)+".txt";
+    cedula_archivo="Pacientes/"+to_string(historial->cedula_paciente)+".txt";
     archivo.open(cedula_archivo,ios::out);
     if(!archivo.fail())
         {
@@ -189,6 +203,7 @@ void crearListaHistoriaOrdenada(historia_paciente &historial,int cedula){
     nueva_historia->sig=aux1;
     crearArchivoHistorial(historial);
 }
+
 void mostrarListaHistoria(historia_paciente lista){
     historia_paciente recorrido;
     recorrido=lista;
@@ -199,7 +214,7 @@ void mostrarListaHistoria(historia_paciente lista){
         cout<<"Diagnostico: "<<recorrido->diagnostico<<endl;
         cout<<"Recipe: "<<recorrido->recipe<<endl;
         cout<<"Examenes: "<<recorrido->examenes<<endl;
-        cout<<"Recipes: "<<recorrido->comentario<<endl;
+        cout<<"Comentarios: "<<recorrido->comentario<<endl;
         recorrido=recorrido->sig;
     }
 }
@@ -219,14 +234,13 @@ void crearListaHistoriaArchivo(historia_paciente &lista_historia, historia_pacie
     }
 }  
 
-void leerArchivoHistoria(historia_paciente &historial){
+historia_paciente leerArchivoHistoria(int cedula){
     fstream archivo;
     string linea,cedula_archivo;
     historia_paciente historia_reciente,aux2;
-    cedula_archivo="Pacientes/"+to_string(historial->cedula_paciente)+".txt";
+    aux2=NULL;
+    cedula_archivo="Pacientes/"+to_string(cedula)+".txt";
     archivo.open(cedula_archivo,ios::in);
-    if(!archivo.fail())
-        {
             while(!archivo.eof())
             {
                 historia_reciente=new(struct nodo_historia);
@@ -237,11 +251,11 @@ void leerArchivoHistoria(historia_paciente &historial){
                 getline(archivo,historia_reciente->examenes);
                 getline(archivo,historia_reciente->comentario);
                 historia_reciente->sig=NULL;
-                crearListaHistoriaArchivo(historial,historia_reciente);
+                crearListaHistoriaArchivo(aux2,historia_reciente);
                 getline(archivo,linea);
             }
+            return aux2;
             
-        }
 
 }
 void imprimirUltimaHistoria(historia_paciente historial)

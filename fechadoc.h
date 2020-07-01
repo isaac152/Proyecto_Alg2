@@ -1,21 +1,25 @@
 #include <iostream>
 #include <stdlib.h>
+
 using namespace std;
-#ifndef FECHADOC_H
-#define FECHADOC_H
-struct nodo_dia
-{
-    string dia;
-    struct nodo_dia* sig=NULL;
-};
+
+
 struct nodo_hora
 {
     int hora;
     bool disponibilidad;
     struct nodo_hora* sig=NULL;
 };
-typedef struct nodo_dia *semana;
 typedef struct nodo_hora *horas;
+
+struct nodo_dia
+{
+    string dia;
+    bool disponibilidad;
+    horas horas_dis;
+    struct nodo_dia* sig=NULL;
+};
+typedef struct nodo_dia *semana;
 
 string diasSemana(int dia){
     switch (dia)
@@ -49,6 +53,7 @@ semana crearSemana(string dia){
     semana dia_semana;
     dia_semana=new(struct nodo_dia);
     dia_semana->dia=dia;
+    dia_semana->disponibilidad=true;
     dia_semana->sig=NULL;
     return dia_semana;
 };
@@ -124,4 +129,48 @@ void asignarSemana(string linea, semana &lista_semana){
     }
     
 }
-#endif
+string mostrarHoras(horas horas_dia){
+    horas recorrido;
+    string aux;
+    string horas_t="";
+    recorrido=horas_dia;
+    while (recorrido!=NULL)
+    {
+        if(recorrido->disponibilidad==true){
+            aux=to_string(recorrido->hora);
+            if (recorrido->sig!=NULL)
+            {
+                horas_t=horas_t+aux+",";
+            }
+            else
+            {
+                horas_t=horas_t+aux;
+            }   
+        }
+        recorrido=recorrido->sig;
+    
+    }
+    return horas_t;
+    
+}
+string mostrarSemana(semana dias_semana){
+    semana recorrido;
+    string aux;
+    string dias="";
+    recorrido=dias_semana;
+    while (recorrido!=NULL)
+    {
+        aux=recorrido->dia;
+        if (recorrido->sig!=NULL)
+        {
+            dias=dias+aux+",";
+        }
+        else
+        {
+            dias=dias+aux;
+        }   
+        recorrido=recorrido->sig;
+    }
+    return dias;
+    
+}

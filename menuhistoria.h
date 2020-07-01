@@ -1,6 +1,8 @@
 #include <iostream>
 #include <stdlib.h>
 #include "pacientes.h"
+#include "pruebacita.h"
+
 using namespace std;
 
 
@@ -13,7 +15,7 @@ void interfazMenuHistoria(){
     cout<<"3-Nueva historia medica"<<endl;
     cout<<"4-Actualizar historia de un paciente"<<endl;
     cout<<"5-Modificar historia de un paciente"<<endl;
-    cout<<"6-Ḿostrar historia de un paciente"<<endl;
+    cout<<"6-Mostrar historia de un paciente"<<endl;
     cout<<"7-Regresar"<<endl;
 }
 
@@ -45,23 +47,28 @@ void menuHistoria(){ //flush por cada reintento
             cedula=cedulaPaciente();
             if(existePaciente(lista_pacientes,cedula)){
                 paciente=buscarPaciente(lista_pacientes,cedula);
-                leerArchivoHistoria(paciente->historia);
-                crearListaHistoriaOrdenada(paciente->historia,paciente->cedula);
-
+                crearListaHistoriaOrdenada(paciente->historia,paciente->cedula); 
+                
             }
             else
             {
-                cout<<"Paciente no se encuentra registrado. Es su primera vez."<<endl;
-                crearListaPacientes(lista_pacientes,cedula);
-                paciente=ultimoPaciente(lista_pacientes);
-                crearListaHistoriaOrdenada(paciente->historia,paciente->cedula);
+                cout<<"Paciente no se encuentra registrado."<<endl;
             }
             break;
         case 4:
                 cedula=cedulaPaciente();
                 if(existePaciente(lista_pacientes,cedula)){
                     paciente=buscarPaciente(lista_pacientes,cedula);
-                    crearListaHistoriaOrdenada(paciente->historia,paciente->cedula);
+                    if(paciente->historia!=NULL){
+                        mostrarListaHistoria(paciente->historia);
+                        cout<<"*************"<<endl;
+                        crearListaHistoriaOrdenada(paciente->historia,paciente->cedula);
+                    }
+                    else
+                    {
+                        cout<<"Paciente no tiene historia, registrela primero"<<endl;
+                    }
+                    
                 }
                 else
                 {
@@ -81,8 +88,10 @@ void menuHistoria(){ //flush por cada reintento
                 }
             break;
         case 6:
+                cedula=cedulaPaciente();
             if(existePaciente(lista_pacientes,cedula)){
                 paciente=buscarPaciente(lista_pacientes,cedula);
+                cout<<"Paciente: "<<paciente->nombres<<endl;
                 mostrarListaHistoria(paciente->historia);
             }
             else
@@ -98,7 +107,6 @@ void menuHistoria(){ //flush por cada reintento
             cin.get();
             break;
         }
-        system("CLS");
 
     }
 

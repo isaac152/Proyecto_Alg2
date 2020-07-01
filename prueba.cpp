@@ -1,15 +1,32 @@
 #include <iostream>
-#include "menu.h"
-
+#include "doctor-sesion.h"
+#include "pacientes.h"
+#include <stdlib.h>
 using namespace std;
-int main(){
 
-    inicioSesion(registro_doctor);
-    /*
-    crearDoctor(registro_doctor);
-    cout<<registro_doctor->anio_sesion<<endl;
-    generarFecha(calendario_app);
-    fechasDisponibles(calendario_app);
-    */
+
+int main(){
+    int cedula,opcion;
+    bool a=true;
+    cedula=cedulaPaciente();
+    cout<<cedula<<endl;
+    cedula=cedulaPaciente();
+    cout<<cedula<<endl;
+    cedula=cedulaPaciente();
+    cout<<cedula<<endl;
+    while (a)
+    {
+        cedula=cedulaPaciente();
+        cout<<cedula<<endl;
+        cout<<"Diga el valor "<<endl;
+        cin>>opcion;
+        if (opcion==0)
+        {
+            a=false;
+        }
+        
+    }
+    
+    system("pause");
     return 0;
 }

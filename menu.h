@@ -1,5 +1,4 @@
 #include <iostream>
-#include "contrasena.h"
 #include "menuhistoria.h"
 #include <stdlib.h>
 using namespace std;

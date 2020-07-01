@@ -28,6 +28,7 @@ int diaNacimiento(){
         }
         
     }
+    return 0;
 }
 int mesNacimiento(){
     string mes;
@@ -46,6 +47,7 @@ int mesNacimiento(){
         }
         
     }
+    return 0;
 }
 int anioNacimiento(){
     string anio;
@@ -64,6 +66,7 @@ int anioNacimiento(){
         }
         
     }
+    return 0;
 }
 string cerofecha(int fecha){
     string agregado="";
@@ -154,7 +157,6 @@ bool fechaCorrecta(int dia, int mes, int anio){
     }
     
 }
-
 string formatoFecha(int d, int m, int a){
     string dia, mes, anio,fechadef;
     dia=cerofecha(d);
@@ -164,7 +166,6 @@ string formatoFecha(int d, int m, int a){
     return fechadef;
     
 }
-
 string fechaPaciente(){
     string fechadef="";
     int dia,mes,anio;
@@ -176,6 +177,7 @@ string fechaPaciente(){
         anio=anioNacimiento();
         if(fechaCorrecta(dia,mes,anio)){
             return formatoFecha(dia,mes,anio);
+            break;
         }
         else
         {
@@ -184,4 +186,5 @@ string fechaPaciente(){
         }
         
     }
+    return "";
 }
