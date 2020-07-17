@@ -1,12 +1,14 @@
 #include <iostream>
 #include <ctype.h>
 #include <fstream>
+#include <string>
 #include "fechapac.h"
 #include "historias.h"
-//#include "citas.h"
-
 using namespace std;
+//Libreria que se encarga de agrupar todas las funciones relacionadas con los pacientes. 
+//Es una libreria padre de historia y fecha paciente.
 
+//Estructura de nodo paciente
 struct nodo_pacientes
 {
     string nombres;
@@ -18,9 +20,11 @@ struct nodo_pacientes
     struct nodo_pacientes *sig;
 };
 typedef struct nodo_pacientes *apun_pacientes;
+//Variable global con la lista de los pacientes
 apun_pacientes lista_pacientes=NULL;
 
-
+//Funcion que se encarga de evaluar si un entero recibido como parametro, se encuentra en el rango 
+//establecido para las cedulas. Devuelve el booleano que sea equivalente a dicha comparacion
 bool cedulaRango(int numero){
     if ((numero>=100000) && (numero<=99999999)){
         return true;
@@ -29,7 +33,8 @@ bool cedulaRango(int numero){
         return false;
     }
 }
-
+//Funcion que se encarga de pedir un numero de cedula y hacer las comprobaciones necesarias con 
+//funciones auxiliares para luego regresar dicho valor como entero
 int cedulaPaciente(){
     string dato;
     bool confirmacion=false;
@@ -48,6 +53,8 @@ int cedulaPaciente(){
     }
     return 0;
 }
+//Funcion que se encarga de pedir un caracter que indique si el paciente es masculino o femenino
+//se realizan las comprobaciones necesarias y si todo funciona devuelve dicho caracter
 char sexoPaciente(){
     char dato;
     bool confirmacion=false;
@@ -69,8 +76,8 @@ char sexoPaciente(){
     return ' ';
 }
 
-
-apun_pacientes crearPaciente(int cedula){ ///llamado iniciar con un cin.ignore()
+//Funcion que se encarga de crear un nodo de paciente. Recibe como parametro la cedula del paciente y retorna dicho nodo
+apun_pacientes crearPaciente(int cedula){ 
     apun_pacientes paciente;
     paciente=new(struct nodo_pacientes);
     cout<<"Registro nuevo paciente"<<endl;
@@ -87,7 +94,9 @@ apun_pacientes crearPaciente(int cedula){ ///llamado iniciar con un cin.ignore()
     paciente->sig=NULL;
     return paciente;
 }
-
+//Funcion que se encarga de crear la lista de los pacientes a partir de los datos leidos de un archivo
+//Recibe como parametro la lista de pacientes (global y por referencia) y el paciente que fue creado a partir
+//de la lectura del archivo
 void crearListaPacientesArchivo(apun_pacientes &lista_paciente, apun_pacientes paciente )
 {
     apun_pacientes aux2;
@@ -104,7 +113,7 @@ void crearListaPacientesArchivo(apun_pacientes &lista_paciente, apun_pacientes p
         aux2->sig=paciente;
     }
 }   
-
+//Funcion auxiliar que se encarga de mostrar toda la lista de pacientes. No esta implementada en el codigo base
 void mostrarListaPaciente(apun_pacientes lista){
     apun_pacientes recorrido;
     recorrido=lista;
@@ -119,6 +128,7 @@ void mostrarListaPaciente(apun_pacientes lista){
     }
 
 }
+//Funcion que se encarga de imprimir el nodo paciente que fue recibido como parametro, indicando sus caracteristicas
 void imprimirPaciente(apun_pacientes paciente)
 {
     cout <<"Paciente "<<endl;
@@ -129,7 +139,7 @@ void imprimirPaciente(apun_pacientes paciente)
     cout <<"5.Direccion: "<<paciente->direccion<<endl;
 
 }
-
+//Funcion que se encarga de guardar los datos de la lista de pacientes en un archivo plano
 void crearArchivoPaciente(apun_pacientes lista_pacientes){
     ofstream aux;
     fstream archivo;
@@ -157,6 +167,9 @@ void crearArchivoPaciente(apun_pacientes lista_pacientes){
         }
     archivo.close();
 }
+//Funcion que se encarga de leer el contenido de un archivo plano y crear una lista pacientes a partir de esos datos
+//Hace un llamado a la funcion crearListaPacientesArchivo tras cada paciente leido.
+//Recibe como parametro por referencia a la lista de pacientes (global)
 void leeArchivoPaciente(apun_pacientes &lista_pacientes){
     fstream archivo;
     string linea;
@@ -191,7 +204,8 @@ void leeArchivoPaciente(apun_pacientes &lista_pacientes){
         }
 
 }
-
+//Funcion que se encarga de buscar y devolver un paciente en concreto a partir de su numero de cedula
+//Recibe como parametro la lista de pacientes y la cedula como entero
 apun_pacientes buscarPaciente(apun_pacientes lista, int cedula) {
     apun_pacientes recorrido = lista;
     while (recorrido != NULL) {
@@ -201,6 +215,8 @@ apun_pacientes buscarPaciente(apun_pacientes lista, int cedula) {
     }
     return (recorrido);
 }
+//Funcion que recorre la lista de pacientes y se encarga de evaluar si existe algun paciente
+//con el numero de cedula dado como parametro. Devuelve el booleano equivalente al resultado de la comparacion
 bool existePaciente(apun_pacientes lista_pacientes, int cedula) {
     apun_pacientes paciente;
     paciente = NULL;
@@ -217,9 +233,13 @@ bool existePaciente(apun_pacientes lista_pacientes, int cedula) {
     }
     return (compro);
 }
+//Funcion que se encarga de modificar el elemento indicado en un paciente en particular.
+//Recibe como parametro dicho paciente y se repite hasta que el usuario decida salir del bucle
 void campoModificarPaciente(apun_pacientes paciente){
     string linea;
-    cout<<"Indique el numero de campo a modificar: "<<endl;
+    cout<<"Indique el numero de campo a modificar: ";
+    bool validacion_cedula=true;
+    int cedula=0;
     int opcion=repetirEntero();
     cin.ignore(); 
     while (opcion!=0)
@@ -234,7 +254,21 @@ void campoModificarPaciente(apun_pacientes paciente){
             paciente->nombres=linea ;
             break;
         case 2:
-            paciente->cedula=cedulaPaciente();
+            while (validacion_cedula){
+    
+                cedula=cedulaPaciente();
+                if(!existePaciente(lista_pacientes,cedula)){
+                    paciente->cedula=cedula;
+                    validacion_cedula=false;
+                }
+                else
+                {
+                    cout<<endl;
+                    cout<<"ERROR. Ya existe un paciente con ese numero de cedula. Intete de nuevo "<<endl;
+                    cout<<endl;
+                    validacion_cedula=true;
+                }
+            }
             break;
         case 3:
             paciente->fnacimiento=fechaPaciente();
@@ -255,6 +289,9 @@ void campoModificarPaciente(apun_pacientes paciente){
         cin.ignore(); 
     }
 }
+//Funcion que se encarga de cambiar el archivo de historia de paciente si este cambia de cedula
+//Se crea un nuevo archivo con la nueva cedula, se copia todos los elementos del viejo archivo y luego se borra el anterior
+//Recibe como parametro la nueva cedula y la vieja cedula para realizar el cambio de archivo
 void cambiarArchivoCedula(int cedula_vieja, int cedula_nueva){
     ofstream aux;
     fstream archivo;
@@ -278,31 +315,26 @@ void cambiarArchivoCedula(int cedula_vieja, int cedula_nueva){
     aux.close();
     remove(cedula_v.c_str());
 }
-void modificarPaciente(apun_pacientes lista_pacientes){
-    int cedula,cond;
+//Funcion que se encarga de mostrar un paciente en concreto, llamar a las funciones respectivas para modificar sus datos
+//y luego imprime de nuevo el paciente cambiado.
+//Recibe como parametro un paciente en particular y su cedula como entero, para evaluar si esta cambio en la modificacion
+void modificarPaciente(apun_pacientes paciente,int cedula){
+    int cond;
     cond=0;
-    apun_pacientes paciente,aux;
-    cedula=cedulaPaciente();
-    if (existePaciente(lista_pacientes,cedula)){
-        paciente=buscarPaciente(lista_pacientes,cedula);
-        imprimirPaciente(paciente);
-        cout<<endl;
-        campoModificarPaciente(paciente);
-        if(cedula!=paciente->cedula){
-            cambiarArchivoCedula(cedula,paciente->cedula);
-        }
-        cout<<"Los datos del paciente fueros modificados correctamente"<<endl;
-        cout<<"**********************"<<endl;
-        imprimirPaciente(paciente);
-        cout<<"**********************"<<endl;
-        crearArchivoPaciente(lista_pacientes);
+    imprimirPaciente(paciente);
+    cout<<endl;
+    campoModificarPaciente(paciente);
+    if(cedula!=paciente->cedula){
+        cambiarArchivoCedula(cedula,paciente->cedula);
     }
-    else
-    {
-        cout<<"No existen registros con esa cedula"<<endl;
-    }
-    
+    cout<<"Los datos del paciente fueros modificados correctamente"<<endl;
+    cout<<"**********************"<<endl;
+    imprimirPaciente(paciente);
+    cout<<"**********************"<<endl;
+    crearArchivoPaciente(lista_pacientes);
 }
+//Funcion que se encarga de crear o agregar nuevos elementos a la lista de pacientes.
+//Recibe como parametro por referencia la lista de pacientes y un entero que sera la cedula del nuevo paciente
 void crearListaPacientes(apun_pacientes &pacientes,int cedula)
 {
     apun_pacientes aux1,aux2;
@@ -319,20 +351,18 @@ void crearListaPacientes(apun_pacientes &pacientes,int cedula)
         }
         aux2->sig=aux1;
     }
+    cout<<endl;
+    cout<<"Paciente creado con exito"<<endl;
+    cout<<"********************"<<endl;
+    imprimirPaciente(aux1);
+    cout<<endl;
+
     crearArchivoPaciente(lista_pacientes);
 
     
 }
-
-apun_pacientes ultimoPaciente(apun_pacientes lista){
-    apun_pacientes aux=lista;
-    while (aux->sig!=NULL)
-    {
-        aux=aux->sig;
-    }
-    return aux;
-    
-}
+//Funcion que recibe como parametro un entero como numero de cedula, busca el paciente en la lista
+//y devuelve el nombre de dicho paciente
 string obtenerNombre(int cedula){
     apun_pacientes recorrido=lista_pacientes;
     while (recorrido!=NULL)

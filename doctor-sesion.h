@@ -39,8 +39,8 @@ horas lista_horas=NULL;
 
 //Funcion que se encarga de verificar que el usuario y la contraseña coinciden con los datos 
 //del nodo doctor.
-
 //NOTA: Se hace un llamado a la funcion encriptado pues la contrasena esta encriptada en el archivo
+//Recibe como parametro el usuario y la contrasena
 bool validacion(string user,string pass)
 {
     if ((user==registro_doctor->user) && (base64_encode(pass,cadena)==registro_doctor->pass))
@@ -52,7 +52,8 @@ bool validacion(string user,string pass)
             return false;
         }
 }
-//Funcion que verifica si el user o la contrasena, tiene mas de 6 cacteres sin espacio
+//Funcion que verifica si el user o la contrasena, tiene mas de 6 cacteres sin espacio y devuelve un bool con eso
+//Recibe como parametro el user o la contrasena
 bool verificacionCaracteres(string parametro){
     bool a=true;
     if (parametro.length()>=6)
@@ -78,7 +79,8 @@ bool verificacionCaracteres(string parametro){
 }
 
 //Funcion que hace un llamado a las dos validaciones anteriores y devuelve el valor booleano 
-//de la operacion de las dos validaciones. Asi, como un mensaje de error.
+//de la operacion de las dos validaciones. Asi, como un mensaje de error. 
+//Tambien recibe como parametro el user y el pass
 bool entrada(string user, string pass){
     bool val1,val2;
     val1=verificacionCaracteres(user);
@@ -103,9 +105,10 @@ bool entrada(string user, string pass){
 
 //Funcion que se encarga de pedir los datos al usuario
 //Luego hace llamado a la funcion entrada para que haga las validaciones necesarias
-//Si entrada devuelve un falso, se hace un llamado recursivo a datoSesion hasta que pueda entrar.
+
 bool datoSesion(){
     string user,pass; 
+    cout<<"***************APP MEDICA****************"<<endl;
     cout<<"Introduzca el username: ";
     cin>>user;
     cout<<" "<<endl;
@@ -119,10 +122,13 @@ bool datoSesion(){
         {
         cout<<"Intente de nuevo."<<endl;
         cout<<"********************"<<endl;
+        cin.get();
+        cin.get();
+        system("clear");
         return false;
         }
     }
-
+//Funcion que se encarga de repetir datoSesion hasta que se introduzcan datos validos para iniciar sesion.
 void nuevoIntento(){
     bool a=true;
     while (a)
@@ -144,6 +150,7 @@ void nuevoIntento(){
 
 //Funcion que verifica la existencia del archivo doctor y llena la estructura doctor con los datos
 //dentro del archivo
+//Recibe como parametro un nodo doctor y un nodo lista_semana. Ambos como variables globales
 void crearDoctor(Doc &registro, semana &lista_semana){
     fstream archivo;
     string linea;
@@ -163,8 +170,7 @@ void crearDoctor(Doc &registro, semana &lista_semana){
                 getline(archivo,linea);
                 asingarHoras(lista_horas,linea);
                 registro->horas_lab=lista_horas;
-                getline(archivo,linea);
-                registro->anio_sesion=atoi(linea.c_str());
+                registro->anio_sesion=2020;
                 break;
             }
     }
@@ -173,14 +179,10 @@ void crearDoctor(Doc &registro, semana &lista_semana){
 }
 
 //Llamada principal de inicio de sesion.  
-//Verifica que el archivo doctor funcionara correctamente 
-//No finaliza hasta que datosSesion retorne verdadero.
+//Verifica que el archivo doctor funcionara correctamente y llenara la estructura doctor, de lo contrario de vuelve un false
+
 bool inicioSesion(){
-    cout<<"APP MEDICA"<<endl;
     crearDoctor(registro_doctor,lista_semana);
-    cout<<registro_doctor->user<<endl;
-    cout<<registro_doctor->pass<<endl;
-    cout<<base64_decode(registro_doctor->pass,cadena)<<endl;;
     nuevoIntento();
     if (registro_doctor!=NULL){
         return true;

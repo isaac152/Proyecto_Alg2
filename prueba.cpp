@@ -1,32 +1,10 @@
 #include <iostream>
-#include "doctor-sesion.h"
-#include "pacientes.h"
-#include <stdlib.h>
+#include "base64.cpp"
 using namespace std;
 
-
 int main(){
-    int cedula,opcion;
-    bool a=true;
-    cedula=cedulaPaciente();
-    cout<<cedula<<endl;
-    cedula=cedulaPaciente();
-    cout<<cedula<<endl;
-    cedula=cedulaPaciente();
-    cout<<cedula<<endl;
-    while (a)
-    {
-        cedula=cedulaPaciente();
-        cout<<cedula<<endl;
-        cout<<"Diga el valor "<<endl;
-        cin>>opcion;
-        if (opcion==0)
-        {
-            a=false;
-        }
-        
-    }
-    
-    system("pause");
+    string a=base64_encode("alg204008",true);
+    cout<<a<<endl;
+    cout<<base64_decode(a,true)<<endl;
     return 0;
 }
